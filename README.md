@@ -2,9 +2,12 @@
 nhl linescore grabber/poster for lemmy
 
 This script requires the following to be installed from pip: plemmy, requests, json
-pip install plemmy  # source is https://github.com/tjkessler/plemmy/  Many thanks for tjkessler for the simple to use library!
-pip install requests
-pip install json
+
+> pip install plemmy  # source is https://github.com/tjkessler/plemmy/  Many thanks for tjkessler for the simple to use library!
+
+> pip install requests
+
+> pip install json
 
 This has been tested with python 3.9 in FreeBSD and python3 in linux for a few basic outputs. Will be testing it on the first preseason game for live updates and pushing any needed fixes at that time in preperation for the regular season.
 
