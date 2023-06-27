@@ -17,26 +17,41 @@ import json
 import requests
 import sys
 import time
+import re
 
 teamID = 0
 gamePK = 0
 communityID = 0
 postID = 0
-gameOver = false
+gameOver = False
+badServer = True
 
 #main loop segment
-server = input("enter server (https://server.here): ")
-username = input("enter username: ")
-password = input("enter password: ")
+while(badServer == True):
+    server = input("enter server (https://server.here): ")
+    https = re.compile('^https?://')
+    matched = https.match(server)
+    if(matched):
+        badServer = False
+    else:
+        print("Bad Server, please make sure you are appending https:// to the server address")
 teamID = input("id # of team: ")
 teamName = input("name of team: ")
 communityName = input("name of local community e.g. flyers: ")
 srv = LemmyHttp(server)
-srv.login(username, password)
+badPass = True
+while(badPass == True):
+        try:
+                username = input("user:")
+                password = input("pass:")
+                output = srv.login(username, password)
+                badPass = False
+        except:
+                print("bad username/password, please try again.")
 is_game()
 get_communityID()
 create_post()
-while(gameOver != true):
+while(gameOver != True):
     line_score()
     time.sleep(5)
     
@@ -85,7 +100,7 @@ def line_score():
     body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod)
     score_update(body)
     if(r.json().get("currentPeriodTimeRemaining") == "Final"):
-        gameOver = true
+        gameOver = True
     
 
 # create post body
