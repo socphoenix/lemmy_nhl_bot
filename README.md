@@ -2,7 +2,7 @@
 nhl linescore grabber/poster for lemmy
 
 This script requires the following to be installed from pip: plemmy, requests, json
-pip install plemmy
+pip install plemmy  # source is https://github.com/tjkessler/plemmy/  Many thanks for tjkessler for the simple to use library!
 pip install requests
 pip install json
 
