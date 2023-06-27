@@ -29,6 +29,7 @@ server = input("enter server (https://server.here): ")
 username = input("enter username: ")
 password = input("enter password: ")
 teamID = input("id # of team: ")
+teamName = input("name of team: ")
 communityName = input("name of local community e.g. flyers: ")
 srv = LemmyHttp(server)
 srv.login(username, password)
@@ -48,7 +49,8 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    post = srv.create_post(communityID, "Game_Name", body="body")
+    teamName = teamName + " Game Today"
+    post = srv.create_post(communityID, teamName, body="")
     postID = post.json().get("post_view")
     postID = postID["post"].get("id")
 
