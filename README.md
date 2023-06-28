@@ -19,4 +19,4 @@ To Run:
 > FreeBSD: python3.9 bot.py
 
 
-To see what the bot can currently do, look here: https://enterprise.lemmy.ml/post/416966
+To see what the bot can currently do, look here: https://enterprise.lemmy.ml/post/416989
