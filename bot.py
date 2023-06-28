@@ -21,10 +21,73 @@ import re
 
 teamID = 0
 gamePK = 0
-communityID = 0
+CID = 0
 postID = 0
 gameOver = False
 badServer = True
+teamName = ""
+#get communityID
+def get_communityID():
+    request = srv.get_community(None, communityName)
+    global CID
+    CID = request.json().get("community_view")
+    CID = CID["community"].get("id")
+
+# create initial post
+def create_post():
+    postName = "Game Today30"
+    global CID, postID
+    temp = CID
+    print(CID)
+    post = srv.create_post(temp, postName, body="test")
+    print(post)
+    postID = post.json().get("post_view")
+    postID = postID["post"].get("id")
+
+# edit post
+def score_update(body2):
+    global postID
+    test = srv.edit_post(postID, body=body2)
+
+#check for game
+def is_game():
+    global teamID, gamePK
+    game_today = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
+    game_today = game_today + str(teamID)
+    r = requests.get(game_today)
+    if(r.json().get("totalGames") == 1):
+        gamePK = r.json().get("dates")[0].get("games")[0].get("gamePk")
+    else:
+        print("no game today")
+        sys.exit()
+
+#get NHL linescore and other info
+def line_score():
+    global gameOver
+    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
+    r = requests.get(game_today)
+    home_name = r.json().get("teams").get("home").get("team").get("name")
+    home_goals = r.json().get("teams").get("home").get("goals")
+    home_power = r.json().get("teams").get("home").get("powerPlay")
+    home_shots = r.json().get("teams").get("home").get("shotsOnGoal")
+    away_name = r.json().get("teams").get("away").get("team").get("name")
+    away_goals = r.json().get("teams").get("away").get("goals")
+    away_power = r.json().get("teams").get("away").get("powerPlay")
+    away_shots = r.json().get("teams").get("away").get("shotsOnGoal")
+    currentPeriod = r.json().get("currentPeriod")
+    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod)
+    score_update(body)
+    print(r.json().get("currentPeriodTimeRemaining"))
+    if(r.json().get("currentPeriodTimeRemaining") == "Final"):
+        gameOver = True
+
+
+# create post body
+def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod):
+    body = "Current Period: " + str(currentPeriod) + "\n" + away_name + ": " + str(away_goals)
+    body = body + " Powerplay: " + str(away_power) + "\n"
+    body = body + home_name + ": " + str(home_goals) + " Powerplay: " + str(home_power)
+    return body
 
 #main loop segment
 while(badServer == True):
@@ -48,63 +111,9 @@ while(badPass == True):
                 badPass = False
         except:
                 print("bad username/password, please try again.")
-is_game()
+#is_game()
 get_communityID()
 create_post()
 while(gameOver != True):
     line_score()
     time.sleep(5)
-    
-
-#get communityID
-def get_communityID():
-    request = srv.get_community(None, communityName)
-    communityID = request.json().get("community_view")
-    communityID = communityID["community"].get("id")
-
-# create initial post
-def create_post():
-    teamName = teamName + " Game Today"
-    post = srv.create_post(communityID, teamName, body="")
-    postID = post.json().get("post_view")
-    postID = postID["post"].get("id")
-
-# edit post
-def score_update(body):
-    srv.edit_post(postID, body="edited")
-
-#check for game
-def is_game():
-    game_today = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
-    game_today = game_today + str(teamID)
-    r = requests.get(game_today)
-    if(r.json().get("totalGames") == 1):
-        gamePK = r.json().get("dates")[0].get("games")[0].get("gamePk")
-    else:
-        print("no game today")
-        sys.exit()
-        
-#get NHL linescore and other info
-def line_score():
-    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
-    r = requests.get(game_today)
-    home_name = r.json().get("teams").get("home").get("team").get("name")
-    home_goals = r.json().get("teams").get("home").get("goals")
-    home_power = r.json().get("teams").get("home").get("powerPlay")
-    home_shots = r.json().get("teams").get("home").get("shotsOnGoal")
-    away_name = r.json().get("teams").get("home").get("team").get("name")
-    away_goals = r.json().get("teams").get("home").get("goals")
-    away_power = r.json().get("teams").get("home").get("powerPlay")
-    away_shots = r.json().get("teams").get("home").get("shotsOnGoal")
-    currentPeriod = r.json().get("currentPeriod")
-    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod)
-    score_update(body)
-    if(r.json().get("currentPeriodTimeRemaining") == "Final"):
-        gameOver = True
-    
-
-# create post body
-def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod):
-    body = "Current Period: " + str(currentPeriod) + "\n" + "away_name + ": " + away_goals + "  Powerplay: " + away_power + "\n" 
-    body = body + home_name + ": " + home_goals + " Powerplay: " + home_power
-    return body
