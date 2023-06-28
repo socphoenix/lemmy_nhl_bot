@@ -191,7 +191,7 @@ while(badPass == True):
                 badPass = False
         except:
                 print("bad username/password, please try again.")
-#is_game()
+is_game()
 get_communityID()
 create_post()
 while(gameOver != True):
