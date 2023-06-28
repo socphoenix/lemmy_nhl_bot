@@ -33,3 +33,5 @@ con.commit()
 # test = str(test[0])
 # test.lstrip("('")
 # test.rstrip("',)")
+
+#on bot.py srv.key = token2
