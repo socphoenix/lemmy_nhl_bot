@@ -35,7 +35,7 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    postName = "Game Today41"
+    postName = "Vegas Game 7"
     global CID, postID
     temp = CID
     post = srv.create_post(temp, postName, body="")
@@ -75,25 +75,41 @@ def line_score():
     currentPeriod = r.json().get("currentPeriod")
     timeLeft = r.json().get("currentPeriodTimeRemaining")
     period = r.json().get("periods")
-    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period)
+    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period, away_shots, home_shots)
     score_update(body)
     temp = r.json().get("currentPeriodTimeRemaining")
-    if(temp == "Final"):
+    if(temp == "Final" and currentPeriod <= 3 and away_goals != home_goals):
         gameOver = True
 
 
 # create post body
-def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period):
+def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period, away_shots, home_shots):
     global gamePK
-    body = "## " + away_name + " vs. " + home_name + "\n\n" + "Current Period: " + str(currentPeriod) + " Time left: " + timeLeft
-    body = body + "\n\n"
-    body = body + "Period 1 Goals: " + away_name + ": " + str(period[0].get("away").get("goals"))  + "     " + home_name + ": " + str(period[0].get("home").get("goals"))
-    body = body + "\n\n"
-    body = body + "Period 2 Goals: " + away_name + ": " + str(period[1].get("away").get("goals"))  + "     " + home_name + ": " + str(period[1].get("home").get("goals"))
-    body = body + "\n\n"
-    body = body + "Period 1 Goals: " + away_name + ": " + str(period[2].get("away").get("goals"))  + "     " + home_name + ": " + str(period[2].get("home").get("goals"))
-    body = body + "\n\n"
-    body = body + "## Total Score:\n\n## " + away_name + ": " + str(away_goals) + "\n\n## " + home_name + ": " + str(home_goals)
+    body = "# " + away_name + " vs " + home_name + "\n ## Period: \n"
+    body = body + "| Period | Time Remaining | \n"
+    body = body + "| ------- | ------------- | \n"
+    body = body + "| " + str(currentPeriod) + " | " + timeLeft + " | \n"
+    body = body + "## Scores: \n"
+    body = body + "| Team | Period 1: | Period 2:  | Period 3: | \n"
+    body = body + "| ----- | -------- | ---------- | ----------- | \n"
+    body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
+    body = body +  str(period[1].get("away").get("goals")) + " | " +  str(period[2].get("away").get("goals")) + " | " + "\n"
+    body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
+    body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | \n"
+    body = body + "## Shots on Goal: \n"
+    body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
+    body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
+    body = body + "| " + away_name + " | " + str(period[0].get("away").get("goals")) + " | "
+    body = body + str(period[1].get("away").get("goals")) + " | " + str(period[2].get("away").get("goals")) + " | "
+    body = body + str(away_shots) + " | \n"
+    body = body + "| " + home_name + " | " + str(period[0].get("home").get("goals")) + " | "
+    body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
+    body = body + str(home_shots) + " | \n"
+    body = body + "## Power Play \n"
+    body = body + "| Team | On PowerPlay | \n"
+    body = body + "| ----- | ------------ | \n"
+    body = body + "| " + away_name + " | " + str(away_power) + " | \n"
+    body = body + "| " + home_name + " | " + str(home_power) + " | \n"
     return body
 
 #main loop segment
