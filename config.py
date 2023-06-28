@@ -2,12 +2,20 @@
 import getpass
 from plemmy import LemmyHttp
 import sqlite3
+import requests
 
 print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
 print("If database already exists all data will be overwritten!")
 server = input("server address (make sure to include the https://): ")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
+
+t = requests.get("https://statsapi.web.nhl.com/api/v1/teams")
+teams = t.json().get("teams")
+print("Select team Number from the following:")
+
+for x in range(0, len(teams)):
+    print(teams[x].get("name") + ": " + str(teams[x].get("id")))
 teamID = input("Team ID NUM: ")
 communityName = input("Name of the local community: ")
 
