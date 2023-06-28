@@ -84,8 +84,8 @@ def line_score():
 
 # create post body
 def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod):
-    body = "Current Period: " + str(currentPeriod) + "\n" + away_name + ": " + str(away_goals)
-    body = body + " Powerplay: " + str(away_power) + "\n"
+    body = "Current Period: " + str(currentPeriod) + "\n\n" + away_name + ": " + str(away_goals)
+    body = body + " Powerplay: " + str(away_power) + "\n\n"
     body = body + home_name + ": " + str(home_goals) + " Powerplay: " + str(home_power)
     return body
 
