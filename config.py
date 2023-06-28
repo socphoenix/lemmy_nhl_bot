@@ -3,7 +3,7 @@ import getpass
 from plemmy import LemmyHttp
 import sqlite3
 
-print("Basic Setup, This will store your auth token in an unencrypted database.")
+print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
 server = input("server address (make sure to include the https://): ")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
@@ -16,6 +16,20 @@ token = r.json().get("jwt")
 
 con = sqlite3.connect("lnhl.db")
 cur = con.cursor()
-cur.execute("CREATE TABLE user(token, teamID, comunityName)")
+cur.execute("CREATE TABLE user(token, teamID, communityName)")
 cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
 con.commit()
+
+
+#in bot.py will need to use l/rstrip as follow for token:
+# r = cur.execute("SELECT token FROM user")
+# token = r.fetchall()
+# token2 = str(token[0])
+# token2 = token2.lstrip("('")
+# token2 = token2.rstrip("',)")
+
+# r = cur.execute("SELECT communityName FROM user")
+# test = r.fetchall()
+# test = str(test[0])
+# test.lstrip("('")
+# test.rstrip("',)")
