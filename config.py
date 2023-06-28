@@ -4,6 +4,7 @@ from plemmy import LemmyHttp
 import sqlite3
 
 print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
+print("If database already exists all data will be overwritten!")
 server = input("server address (make sure to include the https://): ")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
@@ -16,9 +17,14 @@ token = r.json().get("jwt")
 
 con = sqlite3.connect("lnhl.db")
 cur = con.cursor()
-cur.execute("CREATE TABLE user(token, teamID, communityName)")
-cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
-con.commit()
+try:
+    cur.execute("CREATE TABLE user(token, teamID, communityName)")
+    cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
+    con.commit()
+except:
+    cur.execute("DELETE FROM user")
+    cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
+    con.commit()
 
 
 #in bot.py will need to use l/rstrip as follow for token:
