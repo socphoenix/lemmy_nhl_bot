@@ -35,12 +35,10 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    postName = "Game Today30"
+    postName = "Game Today33"
     global CID, postID
     temp = CID
-    print(CID)
     post = srv.create_post(temp, postName, body="test")
-    print(post)
     postID = post.json().get("post_view")
     postID = postID["post"].get("id")
 
@@ -77,8 +75,8 @@ def line_score():
     currentPeriod = r.json().get("currentPeriod")
     body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod)
     score_update(body)
-    print(r.json().get("currentPeriodTimeRemaining"))
-    if(r.json().get("currentPeriodTimeRemaining") == "Final"):
+    temp = r.json().get("currentPeriodTimeRemaining")
+    if(temp == "Final"):
         gameOver = True
 
 
