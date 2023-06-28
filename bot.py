@@ -19,6 +19,8 @@ import sys
 import time
 import re
 
+homeOtShots = 0
+awayOtShots = 0
 teamID = 0
 gamePK = 0
 CID = 0
@@ -35,7 +37,24 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    postName = "Vegas Game 7"
+    global teamID
+    #get team Names/date/regular Season
+    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
+    game_today2 = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
+    game_today2 = game_today + str(teamID)
+    r = requests.get(game_today)
+    t = requests.get(game_today2)
+    home_name = r.json().get("teams").get("home").get("team").get("name")
+    away_name = r.json().get("teams").get("away").get("team").get("name")
+    date = t.json().get("dates")[0].get("date")
+    gameType = t.json().get("dates")[0].get("games")[0].get("gameType")
+    if(gameType == "R"):
+        gameType = "Regular Season"
+    elif(gameType == "PR"):
+        gameType = "Pre-Season"
+    else:
+        gameType = "Playoffs"
+    postName = away_name + " vs. " + home_name + " " + gameType + " " + str(date)
     global CID, postID
     temp = CID
     post = srv.create_post(temp, postName, body="")
@@ -62,7 +81,8 @@ def is_game():
 #get NHL linescore and other info
 def line_score():
     global gameOver
-    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
+    game_today = "https://statsapi.web.nhl.com/api/v1/game/2022020130/linescore"
+    #game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
     r = requests.get(game_today)
     home_name = r.json().get("teams").get("home").get("team").get("name")
     home_goals = r.json().get("teams").get("home").get("goals")
@@ -78,33 +98,70 @@ def line_score():
     body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period, away_shots, home_shots)
     score_update(body)
     temp = r.json().get("currentPeriodTimeRemaining")
-    if(temp == "Final" and currentPeriod <= 3 and away_goals != home_goals):
+    if(temp == "Final" and currentPeriod >= 3 and away_goals != home_goals):
         gameOver = True
 
 
 # create post body
 def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period, away_shots, home_shots):
-    global gamePK
-    body = "# " + away_name + " vs " + home_name + "\n ## Period: \n"
+    global gamePK, homeOtShots, awayOtShots
+    homeOtShots = 0
+    awayOtShots = 0
+    #overtime handler for current Period stat
+    if(currentPeriod >= 4):
+        currentPeriod = "OT " + str(currentPeriod - 3)
+    numPeriods = len(period) - 1
+    #main body
+    body = "# " + away_name + " vs " + home_name + " \n"
     body = body + "| Period | Time Remaining | \n"
     body = body + "| ------- | ------------- | \n"
     body = body + "| " + str(currentPeriod) + " | " + timeLeft + " | \n"
     body = body + "## Scores: \n"
-    body = body + "| Team | Period 1: | Period 2:  | Period 3: | \n"
-    body = body + "| ----- | -------- | ---------- | ----------- | \n"
-    body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
-    body = body +  str(period[1].get("away").get("goals")) + " | " +  str(period[2].get("away").get("goals")) + " | " + "\n"
-    body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
-    body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | \n"
+    if(numPeriods <= 2):
+        body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
+        body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
+        body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
+        body = body +  str(period[1].get("away").get("goals")) + " | " +  str(period[2].get("away").get("goals")) + " | "
+        body = body + away_goals + " | \n"
+        body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
+        body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
+        body = body + home_goals + " | \n"
+    else:
+        body = body + "| Team | Period 1: | Period 2:  | Period 3: | OT | Totals | \n"
+        body = body + "| ----- | -------- | ---------- | --------- | ------| ----- | \n"
+        body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
+        body = body +  str(period[1].get("away").get("goals")) + " | " +  str(period[2].get("away").get("goals")) + " | "
+        body = body + str(period[numPeriods].get("away").get("goals")) + " | " + str(away_goals) + " | \n"
+        body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
+        body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
+        body = body + str(period[numPeriods].get("home").get("goals")) + " | " + str(home_goals) + " | \n"
     body = body + "## Shots on Goal: \n"
-    body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
-    body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
-    body = body + "| " + away_name + " | " + str(period[0].get("away").get("goals")) + " | "
-    body = body + str(period[1].get("away").get("goals")) + " | " + str(period[2].get("away").get("goals")) + " | "
-    body = body + str(away_shots) + " | \n"
-    body = body + "| " + home_name + " | " + str(period[0].get("home").get("goals")) + " | "
-    body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
-    body = body + str(home_shots) + " | \n"
+    if(numPeriods <= 2):
+        body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
+        body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
+        body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("away").get("shotsOnGoal")) + " | " + str(period[2].get("away").get("shotsOnGoal")) + " | "
+        body = body + str(away_shots) + " | \n"
+        body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("home").get("shotsOnGoal")) + " | " + str(period[2].get("home").get("shotsOnGoal")) + " | "
+        body = body + str(home_shots) + " | \n"
+    else:
+        if(numPeriods - 3 == 0):
+            homeOtShots = period[3].get("home").get("shotsOnGoal")
+            awayOtShots = period[3].get("away").get("shotsOnGoal")
+        else:
+            for x in range(3, numPeriods):
+                homeOtShots = homeOtShots + period[x].get("home").get("shotsOnGoal")
+                awayOtShots = awayOtShots + period[x].get("away").get("shotsOnGoal")
+        body = body + "| Team | Period 1 | Period 2 | Period 3 | OT | Total Shots | \n"
+        body = body + "| ----- | ------- | -------- | -------- | ---- | ----------- | \n"
+        body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("away").get("shotsOnGoal")) + " | " + str(period[2].get("away").get("shotsOnGoal")) + " | "
+        body = body + str(awayOtShots) + " | " + str(away_shots) + " | \n"
+        body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("home").get("shotsOnGoal")) + " | " + str(period[2].get("home").get("shotsOnGoal")) + " | "
+        body = body + str(homeOtShots) + " | " + str(home_shots) + " | \n"
+    #Power Play status
     body = body + "## Power Play \n"
     body = body + "| Team | On PowerPlay | \n"
     body = body + "| ----- | ------------ | \n"
@@ -134,7 +191,7 @@ while(badPass == True):
                 badPass = False
         except:
                 print("bad username/password, please try again.")
-is_game()
+#is_game()
 get_communityID()
 create_post()
 while(gameOver != True):
