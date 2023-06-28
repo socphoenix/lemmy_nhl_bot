@@ -37,7 +37,7 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    global teamID
+    global teamID, gamePK
     #get team Names/date/regular Season
     game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
     game_today2 = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
