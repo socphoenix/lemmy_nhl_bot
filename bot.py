@@ -35,10 +35,10 @@ def get_communityID():
 
 # create initial post
 def create_post():
-    postName = "Game Today33"
+    postName = "Game Today41"
     global CID, postID
     temp = CID
-    post = srv.create_post(temp, postName, body="test")
+    post = srv.create_post(temp, postName, body="")
     postID = post.json().get("post_view")
     postID = postID["post"].get("id")
 
@@ -73,7 +73,9 @@ def line_score():
     away_power = r.json().get("teams").get("away").get("powerPlay")
     away_shots = r.json().get("teams").get("away").get("shotsOnGoal")
     currentPeriod = r.json().get("currentPeriod")
-    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod)
+    timeLeft = r.json().get("currentPeriodTimeRemaining")
+    period = r.json().get("periods")
+    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period)
     score_update(body)
     temp = r.json().get("currentPeriodTimeRemaining")
     if(temp == "Final"):
@@ -81,10 +83,17 @@ def line_score():
 
 
 # create post body
-def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod):
-    body = "Current Period: " + str(currentPeriod) + "\n\n" + away_name + ": " + str(away_goals)
-    body = body + " Powerplay: " + str(away_power) + "\n\n"
-    body = body + home_name + ": " + str(home_goals) + " Powerplay: " + str(home_power)
+def post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period):
+    global gamePK
+    body = "## " + away_name + " vs. " + home_name + "\n\n" + "Current Period: " + str(currentPeriod) + " Time left: " + timeLeft
+    body = body + "\n\n"
+    body = body + "Period 1 Goals: " + away_name + ": " + str(period[0].get("away").get("goals"))  + "     " + home_name + ": " + str(period[0].get("home").get("goals"))
+    body = body + "\n\n"
+    body = body + "Period 2 Goals: " + away_name + ": " + str(period[1].get("away").get("goals"))  + "     " + home_name + ": " + str(period[1].get("home").get("goals"))
+    body = body + "\n\n"
+    body = body + "Period 1 Goals: " + away_name + ": " + str(period[2].get("away").get("goals"))  + "     " + home_name + ": " + str(period[2].get("home").get("goals"))
+    body = body + "\n\n"
+    body = body + "## Total Score:\n\n## " + away_name + ": " + str(away_goals) + "\n\n## " + home_name + ": " + str(home_goals)
     return body
 
 #main loop segment
@@ -109,7 +118,7 @@ while(badPass == True):
                 badPass = False
         except:
                 print("bad username/password, please try again.")
-#is_game()
+is_game()
 get_communityID()
 create_post()
 while(gameOver != True):
