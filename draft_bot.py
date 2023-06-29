@@ -4,11 +4,15 @@ import time
 from plemmy import LemmyHttp
 from datetime import datetime
 
+finished = False
+finishedR1 = False
 draftYear = datetime.now().year
 server = input("Server (Make sure to include https://): ")
 username = input("Username: ")
 password = input("Password: ")
 communityName = input("Name of local community: ")
+round1 = input("Is this the first Round? (y/n) ")
+round1 = round1.lower()
 srv = LemmyHttp(server)
 srv.login(username, password)
 request = srv.get_community(None, communityName)
@@ -39,6 +43,8 @@ while(True):
         #print(i)
         #teams[i].get("team")
         body = body + str(teams[i].get("team").get("name")) + " | " + str(teams[i].get("pickOverall")) + " | " + str(teams[i].get("prospect").get("fullName")) + " | \n"
+        if(str(teams[i].get("prospect").get("fullName")) != ""):
+            finishedR1 = True
         i = i + 1
 
     #Round 2
@@ -111,6 +117,8 @@ while(True):
         #print(i)
         #teams[i].get("team")
         body7 = body7 + str(teams[i].get("team").get("name")) + " | " + str(teams[i].get("pickOverall")) + " | " + str(teams[i].get("prospect").get("fullName")) + " | \n"
+        if(str(teams[i].get("prospect").get("fullName")) != ""):
+            finished = True
         i = i + 1
 
     #update post this requires timeout enabled in plemmy, pull request has been submitted to get it merged upstream.
@@ -119,4 +127,8 @@ while(True):
     except:
         print("failed to contact server. Adding extra 60 seconds before retrying")
         time.sleep(60)
+    if(finished == True and round1 == "n"):
+        sys.exit()
+    elif(finishedR1 == True and round1 == "y"):
+        sys.exit()
     time.sleep(120)
