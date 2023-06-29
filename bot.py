@@ -39,8 +39,8 @@ def get_communityID(communityName):
 
 # create initial post
 def create_post():
-    global teamID, gamePK
-    #get team Names/date/regular Season
+    global teamID, gamePK, isMod
+    get team Names/date/regular Season
     game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
     game_today2 = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
     game_today2 = game_today + str(teamID)
@@ -62,6 +62,8 @@ def create_post():
     post = srv.create_post(temp, postName, body="")
     postID = post.json().get("post_view")
     postID = postID["post"].get("id")
+    if(isMod == "y"):
+        srv.feature_post("Community", True, postID)
 
 # edit post
 def score_update(body2):
@@ -203,6 +205,13 @@ temp = r.fetchall()
 teamID = str(temp[0])
 teamID = teamID.lstrip("('")
 teamID = teamID.rstrip("',)")
+
+#get mod status
+r = cur.execute("SELECT isMod FROM user")
+temp = r.fetchall()
+isMod = str(temp[0])
+isMod = isMod.lstrip("('")
+isMod = isMod.rstrip("',)")
 
 #use login token, check for game, get community id, create post, then loop
 srv = LemmyHttp(server)

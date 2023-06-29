@@ -11,6 +11,7 @@ communityName = input("Name of local Community")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
 isMod = input("Is this account a mod of the community? (needed to pin posts) (y/n): ")
+isMod = isMod.lower()
 
 t = requests.get("https://statsapi.web.nhl.com/api/v1/teams")
 teams = t.json().get("teams")
@@ -35,19 +36,3 @@ except:
     cur.execute("DELETE FROM user")
     cur.execute("INSERT INTO user VALUES (?, ?, ?, ?, ?);", (token, teamID, communityName, server, isMod))
     con.commit()
-
-
-#in bot.py will need to use l/rstrip as follow for token:
-# r = cur.execute("SELECT token FROM user")
-# token = r.fetchall()
-# token2 = str(token[0])
-# token2 = token2.lstrip("('")
-# token2 = token2.rstrip("',)")
-
-# r = cur.execute("SELECT communityName FROM user")
-# test = r.fetchall()
-# test = str(test[0])
-# test.lstrip("('")
-# test.rstrip("',)")
-
-#on bot.py srv.key = token2
