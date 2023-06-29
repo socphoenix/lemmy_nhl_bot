@@ -85,8 +85,9 @@ def is_game():
 #get NHL linescore and other info
 def line_score():
     global gameOver
-    game_today = "https://statsapi.web.nhl.com/api/v1/game/2022020130/linescore"
-    #game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
+    #use commented line for testing:
+    #game_today = "https://statsapi.web.nhl.com/api/v1/game/2022020130/linescore"
+    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
     r = requests.get(game_today)
     home_name = r.json().get("teams").get("home").get("team").get("name")
     home_goals = r.json().get("teams").get("home").get("goals")
