@@ -7,8 +7,10 @@ import requests
 print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
 print("If database already exists all data will be overwritten!")
 server = input("server address (make sure to include the https://): ")
+communityName = input("Name of local Community")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
+isMod = input("Is this account a mod of the community? (needed to pin posts) (y/n): ")
 
 t = requests.get("https://statsapi.web.nhl.com/api/v1/teams")
 teams = t.json().get("teams")
@@ -27,11 +29,11 @@ con = sqlite3.connect("lnhl.db")
 cur = con.cursor()
 try:
     cur.execute("CREATE TABLE user(token, teamID, communityName)")
-    cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
+    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?);", (token, teamID, communityName, isMod))
     con.commit()
 except:
     cur.execute("DELETE FROM user")
-    cur.execute("INSERT INTO user VALUES (?, ?, ?);", (token, teamID, communityName))
+    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?);", (token, teamID, communityName, isMod))
     con.commit()
 
 

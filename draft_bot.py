@@ -110,6 +110,10 @@ while(True):
         body7 = body7 + str(teams[i].get("team").get("name")) + " | " + str(teams[i].get("pickOverall")) + " | " + str(teams[i].get("prospect").get("fullName")) + " | \n"
         i = i + 1
 
-    #update post
-    srv.edit_post(postID, body=body+body2+body3+body4+body5+body6+body7)
-    time.sleep(60)
+    #update post this requires timeout enabled in plemmy, pull request has been submitted to get it merged upstream.
+    try:
+        srv.edit_post(postID, body=body+body2+body3+body4+body5+body6+body7)
+    except:
+        print("failed to contact server. Adding extra 60 seconds before retrying")
+        time.sleep(60)
+    time.sleep(120)
