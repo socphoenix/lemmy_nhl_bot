@@ -15,11 +15,11 @@ post = srv.create_post(CID, "2023 Draft!", body="")
 postID = post.json().get("post_view")
 postID = postID["post"].get("id")
 
-r = requests.get("https://statsapi.web.nhl.com/api/v1/draft")
-lister = r.json().get("drafts")[0].get("rounds")
-teams = lister[0].get("picks")
-body = ""
+
 while(True):
+    r = requests.get("https://statsapi.web.nhl.com/api/v1/draft")
+    lister = r.json().get("drafts")[0].get("rounds")
+    teams = lister[0].get("picks")
     body = ""
     body2 = ""
     body3 = ""
