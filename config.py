@@ -28,12 +28,12 @@ token = r.json().get("jwt")
 con = sqlite3.connect("lnhl.db")
 cur = con.cursor()
 try:
-    cur.execute("CREATE TABLE user(token, teamID, communityName)")
-    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?);", (token, teamID, communityName, isMod))
+    cur.execute("CREATE TABLE user(token, teamID, communityName, server, isMod)")
+    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?, ?);", (token, teamID, communityName, server, isMod))
     con.commit()
 except:
     cur.execute("DELETE FROM user")
-    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?);", (token, teamID, communityName, isMod))
+    cur.execute("INSERT INTO user VALUES (?, ?, ?, ?, ?);", (token, teamID, communityName, server, isMod))
     con.commit()
 
 

@@ -3,19 +3,46 @@ import sys
 import time
 from plemmy import LemmyHttp
 from datetime import datetime
+import os.path
+import sqlite3
 
 finished = False
 finishedR1 = False
 draftYear = datetime.now().year
-server = input("Server (Make sure to include https://): ")
-username = input("Username: ")
-password = input("Password: ")
-communityName = input("Name of local community: ")
+# talk to sqlite database
+if(os.path.exists('lnhl.db') == False):
+    print("Please run config.py first!")
+    sys.exit()
+
+#sql database connection/data grabbing
+con = sqlite3.connect("lnhl.db")
+cur = con.cursor()
+#get login token
+r = cur.execute("SELECT token FROM user")
+temp = r.fetchall()
+token = str(temp[0])
+token = token.lstrip("('")
+token = token.rstrip("',)")
+#get community Name
+r = cur.execute("SELECT communityName FROM user")
+temp = r.fetchall()
+communityName = str(temp[0])
+communityName = communityName.lstrip("('")
+communityName = communityName.rstrip("',)")
+# get server name
+r = cur.execute("SELECT server FROM user")
+temp = r.fetchall()
+server = str(temp[0])
+server = server.lstrip("('")
+server = server.rstrip("',)")
+
+#begin main program
 round1 = input("Is this the first Round? (y/n) ")
 round1 = round1.lower()
 srv = LemmyHttp(server)
-srv.login(username, password)
+srv.key = token
 request = srv.get_community(None, communityName)
+print(request)
 CID = request.json().get("community_view")
 CID = CID["community"].get("id")
 post = srv.create_post(CID, str(draftYear) + " Draft!", body="")
