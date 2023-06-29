@@ -68,7 +68,11 @@ def create_post():
 # edit post
 def score_update(body2):
     global postID
-    test = srv.edit_post(postID, body=body2)
+    try:
+        test = srv.edit_post(postID, body=body2)
+    except:
+        print("failed to contact server. Adding extra 60 seconds before retrying")
+        time.sleep(60)
 
 #check for game
 def is_game():
