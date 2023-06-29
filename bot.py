@@ -19,6 +19,7 @@ import sys
 import time
 import re
 import sqlite3
+import os.path
 
 homeOtShots = 0
 awayOtShots = 0
@@ -30,7 +31,7 @@ gameOver = False
 badServer = True
 teamName = ""
 #get communityID
-def get_communityID():
+def get_communityID(communityName):
     request = srv.get_community(None, communityName)
     global CID
     CID = request.json().get("community_view")
@@ -171,29 +172,43 @@ def post_body(away_name, home_name, away_goals, home_goals, away_power, home_pow
     return body
 
 #main loop segment
-while(badServer == True):
-    server = input("enter server (https://server.here): ")
-    https = re.compile('^https?://')
-    matched = https.match(server)
-    if(matched):
-        badServer = False
-    else:
-        print("Bad Server, please make sure you are appending https:// to the server address")
-teamID = input("id # of team: ")
-teamName = input("name of team: ")
-communityName = input("name of local community e.g. flyers: ")
+if(os.path.exists('lnhl.db') == False):
+    print("Please run config.py first!")
+    sys.exit()
+
+#sql database connection/data grabbing
+con = sqlite3.connect("lnhl.db")
+cur = con.cursor()
+#get login token
+r = cur.execute("SELECT token FROM user")
+temp = r.fetchall()
+token = str(temp[0])
+token = token.lstrip("('")
+token = token.rstrip("',)")
+#get community Name
+r = cur.execute("SELECT communityName FROM user")
+temp = r.fetchall()
+communityName = str(temp[0])
+communityName = communityName.lstrip("('")
+communityName = communityName.rstrip("',)")
+# get server name
+r = cur.execute("SELECT server FROM user")
+temp = r.fetchall()
+server = str(temp[0])
+server = server.lstrip("('")
+server = server.rstrip("',)")
+#get teamID
+r = cur.execute("SELECT teamID FROM user")
+temp = r.fetchall()
+teamID = str(temp[0])
+teamID = teamID.lstrip("('")
+teamID = teamID.rstrip("',)")
+
+#use login token, check for game, get community id, create post, then loop
 srv = LemmyHttp(server)
-badPass = True
-while(badPass == True):
-        try:
-                username = input("user:")
-                password = input("pass:")
-                output = srv.login(username, password)
-                badPass = False
-        except:
-                print("bad username/password, please try again.")
+srv.key = token
 is_game()
-get_communityID()
+get_communityID(communityName)
 create_post()
 while(gameOver != True):
     line_score()
