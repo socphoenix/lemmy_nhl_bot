@@ -2,6 +2,9 @@ import requests
 import sys
 import time
 from plemmy import LemmyHttp
+from datetime import datetime
+
+draftYear = datetime.now().year
 server = input("Server (Make sure to include https://): ")
 username = input("Username: ")
 password = input("Password: ")
@@ -11,7 +14,7 @@ srv.login(username, password)
 request = srv.get_community(None, communityName)
 CID = request.json().get("community_view")
 CID = CID["community"].get("id")
-post = srv.create_post(CID, "2023 Draft!", body="")
+post = srv.create_post(CID, str(draftYear) + " Draft!", body="")
 postID = post.json().get("post_view")
 postID = postID["post"].get("id")
 
