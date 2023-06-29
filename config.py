@@ -4,10 +4,7 @@ from plemmy import LemmyHttp
 import sqlite3
 import requests
 
-token = ""
-
-print("Basic Setup, This will store your auth token in an sqlite database. sqlite does not use encryption so please make")
-print("sure to run this on a trusted computer, and use an account just for this bot. Username/password itself are not saved.")
+print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
 print("If database already exists all data will be overwritten!")
 server = input("server address (make sure to include the https://): ")
 username = input("Username: ")
@@ -23,16 +20,8 @@ teamID = input("Team ID NUM: ")
 communityName = input("Name of the local community: ")
 
 srv = LemmyHttp(server)
-badPass = True
-while(badPass == True):
-        try:
-            username = input("user:")
-            password = input("pass:")
-            r = srv.login(username, password)
-            token = r.json().get("jwt")
-            badPass = False
-        except:
-            print("bad username/password, please try again.")
+r = srv.login(username, password)
+token = r.json().get("jwt")
 
 con = sqlite3.connect("lnhl.db")
 cur = con.cursor()
