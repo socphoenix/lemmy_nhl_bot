@@ -2,8 +2,6 @@ from plemmy import LemmyHttp
 import json
 import requests
 import sys
-import time
-import re
 import sqlite3
 import os.path
 import time
