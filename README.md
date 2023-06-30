@@ -15,7 +15,7 @@ This bot is still a work in progress. Right now it needs username/password/serve
 
 ## Usage:
 Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
-these the script will crash! This script will also make use of a plemmy feature that is not upstream yet. You will need to run: 
+these the script will crash! This script can also make use of a plemmy feature that is not upstream yet. You will need to run: 
 > git clone https://github.com/socphoenix/plemmy.git
 >
 > cd plemmy
@@ -24,7 +24,7 @@ these the script will crash! This script will also make use of a plemmy feature 
 >
 > python setup.py install
 
-Once installed the script will work properly.
+Once installed the script will have a timeout feature in case the server is taking too long to respond.
 
 ### Run config.py:
 > Linux: python3 config.py
@@ -32,6 +32,9 @@ Once installed the script will work properly.
 >FreeBSD: python3.9 config.py
 
 ### Run the bot:
+There are 4 scripts here. draft_bot, standings_bot, stat_bot, and bot.py. stat is for team stats, standings are current standings 
+around the nhl, a bot.py is for live score updates.
+
 > Linux: python3 bot.py
 
 > FreeBSD: python3.9 bot.py
