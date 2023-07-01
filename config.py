@@ -3,11 +3,11 @@ import getpass
 from plemmy import LemmyHttp
 import sqlite3
 import requests
+import time
 
 print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
 print("If database already exists all data will be overwritten!")
 server = input("server address (make sure to include the https://): ")
-communityName = input("Name of local Community")
 username = input("Username: ")
 password = getpass.getpass('Password: ')
 isMod = input("Is this account a mod of the community? (needed to pin posts) (y/n): ")
@@ -36,3 +36,25 @@ except:
     cur.execute("DELETE FROM user")
     cur.execute("INSERT INTO user VALUES (?, ?, ?, ?, ?);", (token, teamID, communityName, server, isMod))
     con.commit()
+try:
+    cur.execute("CREATE TABLE schedule(gamePK, date, time)")
+    con.commit()
+except:
+    cur.execute("DELETE FROM schedule")
+    con.commit()
+
+#scrape schedule and times, output to database under schedule table
+today = time.strftime("%Y")
+year = int(today) + 1
+t = requests.get("https://statsapi.web.nhl.com/api/v1/schedule?teamId=" + str(teamID) + "&season=" + str(today) + str(year))
+games = t.json().get("dates")
+i = len(games)
+j = 0
+while(j < i):
+    gamePK = games[j].get("games")[0].get("gamePk")
+    date = games[j].get("games")[0].get("gameDate")
+    date = date.split("T")
+    date[1] = date[1].rstrip("Z")
+    cur.execute("INSERT INTO schedule VALUES (?, ?, ?);", (gamePK, date[0], date[1]))
+    con.commit()
+    j = j + 1
