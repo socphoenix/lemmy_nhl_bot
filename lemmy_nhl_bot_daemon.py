@@ -193,7 +193,7 @@ while(True):
         stats = False
     #check for new schedule in August, re-run schedule to database
     month = int(time.strftime("%m"))
-    if(month == 08 and newSchedule = False):
+    if(month == 8 and newSchedule = False):
         newSchedule = True
         cur.execute("DELETE FROM schedule")
         con.commit()
@@ -212,6 +212,6 @@ while(True):
             j = j + 1
         r = cur.execute("SELECT * FROM schedule")
         games = r.fetchall()
-    elif(month == 07):
+    elif(month == 7):
         newSchedule = False
     time.sleep(300)
