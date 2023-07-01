@@ -26,15 +26,15 @@ these the script will crash!
 >FreeBSD: python3.9 config.py
 
 ### Run the bot:
-There are 4 scripts here. draft_bot, standings_bot, stat_bot, and bot.py. stat is for team stats, standings are current standings 
-around the nhl, a bot.py is for live score updates.
+There are 2 scripts here. draft_bot, lemmy_nhl_bot.py. draft_bot currently needs to be run manually each day of the draft. lemm_nhl_bot.py is
+meant to act as a daemon and be run continuously. It will pull from config.py for information needed during the season.
 
-> Linux: python3 bot.py
+> Linux: python3 lemmy_nhl_bot.py
 
-> FreeBSD: python3.9 bot.py
+> FreeBSD: python3.9 lemm_nhl_bot.py
 
 ### Current Testing:
-daemon.py is currently in testing for running as a service. There is literally no guarantee it will work, will have more information in a few days on this once testing is done.
+daemon.py is currently in testing for running as a service. There is no guarantee it will work, will have more information in a few days on this once testing is done.
 
 
 To see what the bot can currently do, look here: https://enterprise.lemmy.ml/post/416989
