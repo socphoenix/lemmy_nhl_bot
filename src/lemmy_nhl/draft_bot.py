@@ -11,7 +11,8 @@ def draft():
     finishedR1 = False
     draftYear = datetime.now().year
     # talk to sqlite database
-    if(os.path.exists('lnhl.db') == False):
+    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+    if(os.path.exists(dbLocation) == False):
         print("Please run config.py first!")
         sys.exit()
 

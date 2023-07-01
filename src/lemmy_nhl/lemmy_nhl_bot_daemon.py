@@ -168,7 +168,7 @@ def daemon():
             cur.execute("DELETE FROM schedule")
             con.commit()
             year = int(time.strftime("%Y"))
-            t = requests.get("https://statsapi.web.nhl.com/api/v1/schedule?teamId=" + str(teamID) + "&season=" + str(today) + str(year))
+            t = requests.get("https://statsapi.web.nhl.com/api/v1/schedule?teamId=" + str(teamID) + "&season=" + str(year) + str(year + 1))
             games = t.json().get("dates")
             i = len(games)
             j = 0
