@@ -16,6 +16,7 @@ This script requires the following to be installed from pip: plemmy, requests, j
 
 This has been tested with python 3.9 in FreeBSD and python3 in linux for a few basic outputs. Will be testing it on the first preseason game for live updates and pushing any needed fixes at that time in preperation for the regular season.
 
+
 ## Build the .whl
 > git clone https://github.com/socphoenix/lemmy_nhl_bot.git
 >
@@ -32,6 +33,7 @@ This has been tested with python 3.9 in FreeBSD and python3 in linux for a few b
 ## Usage:
 Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
 these the script will crash!
+
 
 ### Run config.py:
 > Linux: lemmy_nhl_config
