@@ -18,16 +18,7 @@ This bot is still a work in progress. Right now it needs username/password/serve
 
 ## Usage:
 Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
-these the script will crash! This script can also make use of a plemmy feature that is not upstream yet. You will need to run: 
-> git clone https://github.com/socphoenix/plemmy.git
->
-> cd plemmy
->
-> git checkout timeout
->
-> python setup.py install
-
-Once installed the script will have a timeout feature in case the server is taking too long to respond.
+these the script will crash!
 
 ### Run config.py:
 > Linux: python3 config.py
@@ -41,6 +32,9 @@ around the nhl, a bot.py is for live score updates.
 > Linux: python3 bot.py
 
 > FreeBSD: python3.9 bot.py
+
+### Current Testing:
+daemon.py is currently in testing for running as a service. There is literally no guarantee it will work, will have more information in a few days on this once testing is done.
 
 
 To see what the bot can currently do, look here: https://enterprise.lemmy.ml/post/416989
