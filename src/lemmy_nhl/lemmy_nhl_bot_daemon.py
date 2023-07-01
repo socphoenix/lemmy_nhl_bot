@@ -30,7 +30,7 @@ def isGame():
         gameToday = gameToday.split("-")
         gamePK = games[x][0]
         if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
-            timeStart = x[0][2]
+            timeStart = games[x][2]
             curTime = time.strftime("%H:%M", time.gmtime())
             timeStart = timeStart.split(":")
             curTime = curTime.split(":")
@@ -46,7 +46,7 @@ def create_post_linescore():
     #get team Names/date/regular Season
     game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
     game_today2 = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
-    game_today2 = game_today + str(teamID)
+    game_today2 = game_today2 + str(teamID)
     r = requests.get(game_today)
     t = requests.get(game_today2)
     home_name = r.json().get("teams").get("home").get("team").get("name")
@@ -78,7 +78,7 @@ def gameTime():
     except:
         print("failed to contact server. Adding extra 60 seconds before retrying")
         time.sleep(60)
-    sleep(5)
+    time.sleep(5)
 
 
 #get community ID

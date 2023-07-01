@@ -126,8 +126,6 @@ def post_body_linescore(gamePK):
     currentPeriod = r.json().get("currentPeriod")
     timeLeft = r.json().get("currentPeriodTimeRemaining")
     period = r.json().get("periods")
-    body = post_body(away_name, home_name, away_goals, home_goals, away_power, home_power, currentPeriod, timeLeft, period, away_shots, home_shots)
-    score_update(body)
     temp = r.json().get("currentPeriodTimeRemaining")
     if(temp == "Final" and currentPeriod >= 3 and away_goals != home_goals):
         gameOver = True
