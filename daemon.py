@@ -67,7 +67,7 @@ def create_post_linescore():
 #Linescore for game
 def gameTime():
     global gameOver, postID, gamePK
-    body2, gameOver = body.post_body_linescore(gamePK)
+    body2, gameOver = post_body.post_body_linescore(gamePK)
     try:
         test = srv.edit_post(postID, body=body2)
     except:
@@ -116,14 +116,14 @@ def create_post_stats():
     global CID, teamID
     today = time.strftime("%m-%d-%Y")
     title = "Team Stats for the Season as of " + today
-    body = body.post_body_stats(teamID)
+    body = post_body.post_body_stats(teamID)
     srv.create_post(CID, title, body=body)
 
 def create_post_standings():
     today = time.strftime("%m-%d-%Y")
     global CID
     postName = "NHL Standings as of " + today
-    body = body.post_body_standings()
+    body = post_body.post_body_standings()
     post = srv.create_post(CID, postName, body=body)
 
 #main loop segment
