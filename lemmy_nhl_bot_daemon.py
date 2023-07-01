@@ -16,14 +16,17 @@ teamID = 0
 
 # create time based services
 # check for game today:
+
+#is game
 def isGame():
-    global gameOver, games
+    global gameOver, games, gamePK
     today = time.strftime("%Y, %m, %d")
     today = str(today)
     today = today.split(", ")
     for x in range(len(games)):
         gameToday = games[x][1]
         gameToday = gameToday.split("-")
+        gamePK = games[x][0]
         if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
             timeStart = x[0][2]
             curTime = time.strftime("%H:%M", time.gmtime())
@@ -84,7 +87,7 @@ def get_communityID(communityName):
     CID = CID["community"].get("id")
 
 
-#create post, will need to edit
+#create post_linescore
 def create_post_linescore():
     global teamID, gamePK, isMod
     #get team Names/date/regular Season
@@ -175,6 +178,7 @@ srv = LemmyHttp(server)
 srv.key = token
 get_communityID(communityName)
 
+
 #main loop
 while(True):
     isGame()
@@ -187,4 +191,27 @@ while(True):
     elif(str(today) == "Tue" and standings == True):
         standings = False
         stats = False
+    #check for new schedule in August, re-run schedule to database
+    month = int(time.strftime("%m"))
+    if(month == 08 and newSchedule = False):
+        newSchedule = True
+        cur.execute("DELETE FROM schedule")
+        con.commit()
+        year = int(time.strftime("%Y"))
+        t = requests.get("https://statsapi.web.nhl.com/api/v1/schedule?teamId=" + str(teamID) + "&season=" + str(today) + str(year))
+        games = t.json().get("dates")
+        i = len(games)
+        j = 0
+        while(j < i):
+            gamePK = games[j].get("games")[0].get("gamePk")
+            date = games[j].get("games")[0].get("gameDate")
+            date = date.split("T")
+            date[1] = date[1].rstrip("Z")
+            cur.execute("INSERT INTO schedule VALUES (?, ?, ?);", (gamePK, date[0], date[1]))
+            con.commit()
+            j = j + 1
+        r = cur.execute("SELECT * FROM schedule")
+        games = r.fetchall()
+    elif(month == 07):
+        newSchedule = False
     time.sleep(300)
