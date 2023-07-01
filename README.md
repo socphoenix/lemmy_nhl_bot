@@ -21,20 +21,17 @@ Before starting bot.py, please make sure to run config.py! It is needed to save 
 these the script will crash!
 
 ### Run config.py:
-> Linux: python3 config.py
+> Linux: lemmy_nhl_config
 
->FreeBSD: python3.9 config.py
+>FreeBSD: lemmy_nhl_config.py ##This requires path set. for sh (default shell): "PATH=${PATH}:/home/'put user here'/.local/bin" "export PATH"
 
-### Run the bot:
-There are 2 scripts here. draft_bot, lemmy_nhl_bot.py. draft_bot currently needs to be run manually each day of the draft. lemm_nhl_bot.py is
-meant to act as a daemon and be run continuously. It will pull from config.py for information needed during the season.
-
-> Linux: python3 lemmy_nhl_bot.py (to detach this from the console screen so you can close it, add " &" to the command)
-
-> FreeBSD: python3.9 lemm_nhl_bot.py (to detach this from the console screen so you can close it, add " &" to the command)
-
-### Current Testing:
-daemon.py is currently in testing for running as a service. There is no guarantee it will work, will have more information in a few days on this once testing is done.
+### run daemon
+Unix: lemmy_nhl_daemon   **** add " &" to run in the background. Working on creating service files but they are not done yet.
 
 
-To see what the bot can currently do, look here: https://enterprise.lemmy.ml/post/416989
+### run draft bot
+Unix: lemmy_nhl_draft
+
+
+
+To see what the bot can currently do, look here: [pinned game](https://enterprise.lemmy.ml/post/417088), [stats](https://enterprise.lemmy.ml/post/417090), [standings](https://enterprise.lemmy.ml/post/417089)
