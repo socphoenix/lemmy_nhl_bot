@@ -17,7 +17,7 @@ teamID = 0
 # create time based services
 # check for game today:
 def isGame():
-    global gameOver
+    global gameOver, games
     today = time.strftime("%Y, %m, %d")
     today = str(today)
     today = today.split(", ")
