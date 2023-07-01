@@ -13,6 +13,7 @@ standings = False
 stats = False
 postID = 0
 teamID = 0
+newSchedule = False
 
 # create time based services
 # check for game today:
@@ -193,7 +194,7 @@ while(True):
         stats = False
     #check for new schedule in August, re-run schedule to database
     month = int(time.strftime("%m"))
-    if(month == 8 and newSchedule = False):
+    if(month == 8 and newSchedule == False):
         newSchedule = True
         cur.execute("DELETE FROM schedule")
         con.commit()
