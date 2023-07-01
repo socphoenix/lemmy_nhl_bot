@@ -29,9 +29,9 @@ these the script will crash!
 There are 2 scripts here. draft_bot, lemmy_nhl_bot.py. draft_bot currently needs to be run manually each day of the draft. lemm_nhl_bot.py is
 meant to act as a daemon and be run continuously. It will pull from config.py for information needed during the season.
 
-> Linux: python3 lemmy_nhl_bot.py
+> Linux: python3 lemmy_nhl_bot.py (to detach this from the console screen so you can close it, add " &" to the command)
 
-> FreeBSD: python3.9 lemm_nhl_bot.py
+> FreeBSD: python3.9 lemm_nhl_bot.py (to detach this from the console screen so you can close it, add " &" to the command)
 
 ### Current Testing:
 daemon.py is currently in testing for running as a service. There is no guarantee it will work, will have more information in a few days on this once testing is done.
