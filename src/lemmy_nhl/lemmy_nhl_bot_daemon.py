@@ -163,13 +163,8 @@ def daemon():
             create_post_stats()
             standings = True
             stats = True
-        elif(str(today) == "Tue" and standings == True):
-            standings = False
-            stats = False
-        #check for new schedule in August, re-run schedule to database
-        month = int(time.strftime("%m"))
-        if(month == 8 and newSchedule == False):
             newSchedule = True
+            # get new schedule weekly to catch playoffs
             cur.execute("DELETE FROM schedule")
             con.commit()
             year = int(time.strftime("%Y"))
@@ -187,6 +182,8 @@ def daemon():
                 j = j + 1
             r = cur.execute("SELECT * FROM schedule")
             games = r.fetchall()
-        elif(month == 7):
+        elif(str(today) == "Tue" and standings == True):
+            standings = False
+            stats = False
             newSchedule = False
         time.sleep(300)
