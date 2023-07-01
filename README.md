@@ -1,5 +1,7 @@
 # DEV branch has been tested. A few things to note: 
-> The api seems unable to pull data for preseason games. Everything that is currently being put into the database is regulard season only
+> Without modifying files, there is currently no way to test this. I've tested that it works with old data, and will be testing/
+> fixing whatever needs it during the first preseason game of the Flyers (or earlier if someone reports an issue before this).
+
 
 # lemmy_nhl_bot
 nhl linescore grabber/poster for lemmy
@@ -14,7 +16,18 @@ This script requires the following to be installed from pip: plemmy, requests, j
 
 This has been tested with python 3.9 in FreeBSD and python3 in linux for a few basic outputs. Will be testing it on the first preseason game for live updates and pushing any needed fixes at that time in preperation for the regular season.
 
-This bot is still a work in progress. Right now it needs username/password/server to be entered each time it is run. it also requires the integer teamID from the nhl api. Future update will be able to scrape this info. Bot refreshes the line score every five seconds and updates the post body with basic score. Period info to be added later.
+## Build the .whl
+> git clone https://github.com/socphoenix/lemmy_nhl_bot.git
+>
+> cd lemmy_nhl_bot
+>
+> git checkout dev
+>
+> Linux (FreeBSD use python3.9): python3 -m build . --wheel
+>
+> cd dist
+>
+> pip install lemmy_nhl-2.0.0-py3-none-any.whl
 
 ## Usage:
 Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
