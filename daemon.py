@@ -181,7 +181,7 @@ while(True):
     today = time.strftime("%a")
     if(str(today) == "Mon" and standings == False):
         create_post_standings()
-        create_post_stats
+        create_post_stats()
         standings = True
         stats = True
     elif(str(today) == "Tue" and standings == True):
