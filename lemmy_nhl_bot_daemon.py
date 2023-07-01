@@ -136,7 +136,8 @@ if(os.path.exists('lnhl.db') == False):
     sys.exit()
 
 #sql database connection/data grabbing
-con = sqlite3.connect("lnhl.db")
+dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+con = sqlite3.connect(dbLocation)
 cur = con.cursor()
 #get login token
 r = cur.execute("SELECT token FROM user")
