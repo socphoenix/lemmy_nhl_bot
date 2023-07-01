@@ -3,7 +3,7 @@ import sqlite3
 from plemmy import LemmyHttp
 import os.path
 import time
-import body
+import post_body
 
 teamID = 0
 CID = 0
