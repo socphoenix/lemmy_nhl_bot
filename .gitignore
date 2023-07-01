@@ -3,3 +3,5 @@ lnhl.db
 draft_boy.py
 .draft_boy.py.kate-swp
 __pycache__/
+build/
+dist/

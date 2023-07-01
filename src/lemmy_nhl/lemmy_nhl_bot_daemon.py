@@ -3,7 +3,8 @@ import sqlite3
 from plemmy import LemmyHttp
 import os.path
 import time
-import post_body
+import sys
+from lemmy_nhl import post_body
 
 teamID = 0
 CID = 0
@@ -131,7 +132,8 @@ def create_post_standings():
     post = srv.create_post(CID, postName, body=body)
 
 #main loop segment
-if(os.path.exists('lnhl.db') == False):
+dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+if(os.path.exists(dbLocation) == False):
     print("Please run config.py first!")
     sys.exit()
 
