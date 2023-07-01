@@ -1,5 +1,5 @@
-# DEV BRANCH WILL BE UNSTABLE! PUSHES TO DEV WILL BE FOCUSED ON CREATING A DAEMON AND LIKELY WILL NOT WORK WHILE THIS IS IN PROGRESS!
-
+# DEV branch has been tested. A few things to note: 
+> The api seems unable to pull data for preseason games. Everything that is currently being put into the database is regulard season only
 
 # lemmy_nhl_bot
 nhl linescore grabber/poster for lemmy
