@@ -5,3 +5,4 @@ draft_boy.py
 __pycache__/
 build/
 dist/
+src/lemmy_nhl.egg-info
