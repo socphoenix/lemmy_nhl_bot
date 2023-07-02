@@ -30,7 +30,7 @@ these the script will crash!
 >FreeBSD: lemmy_nhl_config ##This requires path set. for sh (default shell): "PATH=${PATH}:/home/'put user here'/.local/bin" "export PATH"
 
 ### run daemon
-Unix: lemmy_nhl_daemon   **** add " &" to run in the background. Working on creating service files but they are not done yet.
+Unix: lemmy_nhl_daemon   **** add " &" to run in the background.
 
 
 ### run draft bot
