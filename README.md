@@ -6,10 +6,6 @@ This branch is for docker installs. you will need to download the "Dockerfile" a
 Run 
 > python3 config.py
 
-then run:
-> docker build --pull -t lemmy-nhl .
->
-> docker run lemmy-nhl &
 
 it's not pretty but it does work.
 
