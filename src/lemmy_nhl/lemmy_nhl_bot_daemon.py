@@ -107,7 +107,7 @@ def daemon():
 
     #sql database connection/data grabbing
     dbLocation = os.path.expanduser("/lib/python3.11/site-packages/lemmy_nhl/lnhl.db")
-    con = sqlite3.connect(dbLocation)
+    con = sqlite3.connect("lnhl.db")
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
