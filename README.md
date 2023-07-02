@@ -5,6 +5,8 @@ nhl linescore grabber/poster for lemmy
 This branch is for docker installs. you will need to download the "Dockerfile" and "config.py" to a directory.
 Run 
 > python3 config.py
+>
+> docker build -t lemmy_nhl_bot .
 
 
 it's not pretty but it does work.
