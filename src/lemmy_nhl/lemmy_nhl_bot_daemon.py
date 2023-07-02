@@ -158,7 +158,7 @@ def daemon():
     while(True):
         isGame()
         today = time.strftime("%a")
-        if(str(today) == "Sat" and standings == False):
+        if(str(today) == "Sun" and standings == False):
             create_post_standings()
             create_post_stats()
             standings = True
