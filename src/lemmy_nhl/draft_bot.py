@@ -43,13 +43,24 @@ def draft():
     round1 = round1.lower()
     srv = LemmyHttp(server)
     srv.key = token
-    request = srv.get_community(None, communityName)
-    print(request)
-    CID = request.json().get("community_view")
-    CID = CID["community"].get("id")
-    post = srv.create_post(CID, str(draftYear) + " Draft!", body="")
-    postID = post.json().get("post_view")
-    postID = postID["post"].get("id")
+    requested = False
+    while(requested == False):
+        try:
+            request = srv.get_community(None, communityName)
+            CID = request.json().get("community_view")
+            CID = CID["community"].get("id")
+            requested = True
+        except:
+            print("failed to get community, trying again")
+    requested = False
+    while(requested == False):
+        try:
+            post = srv.create_post(CID, str(draftYear) + " Draft!", body="")
+            postID = post.json().get("post_view")
+            postID = postID["post"].get("id")
+            requested = True
+        except:
+            print("failed to create post, trying again.")
 
 
     while(True):
@@ -131,8 +142,6 @@ def draft():
         body6 = "# Round 6 \n" + "| Team Name | Pick # | Selection | \n"
         body6 = body6 + "| -------- | ------- | -------- |\n"
         while(i < j):
-            #print(i)
-            #teams[i].get("team")
             body6 = body6 + str(teams[i].get("team").get("name")) + " | " + str(teams[i].get("pickOverall")) + " | " + str(teams[i].get("prospect").get("fullName")) + " | \n"
             i = i + 1
 
@@ -143,8 +152,6 @@ def draft():
         body7 = "# Round 7 \n" + "| Team Name | Pick # | Selection | \n"
         body7 = body7 + "| -------- | ------- | -------- |\n"
         while(i < j):
-            #print(i)
-            #teams[i].get("team")
             body7 = body7 + str(teams[i].get("team").get("name")) + " | " + str(teams[i].get("pickOverall")) + " | " + str(teams[i].get("prospect").get("fullName")) + " | \n"
             if(str(teams[i].get("prospect").get("fullName")) != ""):
                 finished = True

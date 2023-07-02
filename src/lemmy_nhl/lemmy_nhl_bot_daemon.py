@@ -62,11 +62,23 @@ def create_post_linescore():
     postName = away_name + " vs. " + home_name + " " + gameType + " " + str(date)
     global CID, postID
     temp = CID
-    post = srv.create_post(temp, postName, body="")
-    postID = post.json().get("post_view")
-    postID = postID["post"].get("id")
+    posted = False
+    while(posted == False):
+        try:
+            post = srv.create_post(temp, postName, body="")
+            postID = post.json().get("post_view")
+            postID = postID["post"].get("id")
+            posted = True
+        except:
+            print("failed to post, trying again")
     if(isMod == "y"):
-        srv.feature_post("Community", True, postID)
+        feature = False
+        while(feature == False):
+            try:
+                srv.feature_post("Community", True, postID)
+                feature = True
+            except:
+                print("Failed to feature post, trying again.")
 
 
 #Linescore for game
@@ -88,14 +100,26 @@ def create_post_stats():
     today = time.strftime("%m-%d-%Y")
     title = "Team Stats for the Season as of " + today
     body = post_body.post_body_stats(teamID)
-    srv.create_post(CID, title, body=body)
+    posted = False
+    while(posted == False):
+        try:
+            srv.create_post(CID, title, body=body)
+            posted = True
+        except:
+            print("failed to post, trying again.")
 
 def create_post_standings():
     today = time.strftime("%m-%d-%Y")
     global CID
     postName = "NHL Standings as of " + today
     body = post_body.post_body_standings()
-    post = srv.create_post(CID, postName, body=body)
+    posted = False
+    while(posted == False):
+        try:
+            post = srv.create_post(CID, postName, body=body)
+            posted = True
+        except:
+            print("failed to post, trying again.")
 
 #main loop segment
 def daemon():
