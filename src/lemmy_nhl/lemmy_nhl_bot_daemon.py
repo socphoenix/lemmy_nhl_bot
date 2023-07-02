@@ -21,7 +21,7 @@ srv = ""
 
 #is game
 def isGame():
-    global gameOver, games, gamePK
+    global gameOver, games, gamePK, srv, postID
     today = time.strftime("%Y, %m, %d")
     today = str(today)
     today = today.split(", ")
@@ -36,9 +36,10 @@ def isGame():
             curTime = curTime.split(":")
             #compare 0, 1 on these if hour and minute >= to then start game
             if(int(curTime[0]) >= int(timeStart[0]) and int(curTime[1]) >= int(timeStart[1]) and gameOver == False):
-                   create_post_linescore()
-                   while(gameOver == False):
-                       gameTime()
+                create_post_linescore()
+                while(gameOver == False):
+                    gameTime()
+                srv.feature_post("Community", False, postID)
 
 #create post for linescore
 def create_post_linescore():
