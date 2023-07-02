@@ -106,8 +106,8 @@ def daemon():
         sys.exit()
 
     #sql database connection/data grabbing
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
-    con = sqlite3.connect("/lnhl.db")
+    dbLocation = os.path.expanduser("/lnhl.db")
+    con = sqlite3.connect(dbLocation)
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
