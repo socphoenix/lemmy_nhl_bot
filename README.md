@@ -15,6 +15,10 @@ This has been tested with python 3.9 in FreeBSD and python3 in linux for a few b
 ## Install from pip
 > pip install lemmy-nhl==1.5.0
 
+## Install using Docker:
+See [docker branch](https://github.com/socphoenix/lemmy_nhl_bot/tree/docker) of repo, there is a config.py script that needs to be run 
+before docker build!
+
 ## Usage:
 Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
 these the script will crash!
