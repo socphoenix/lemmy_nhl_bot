@@ -126,13 +126,13 @@ def create_post_standings():
 def daemon():
     global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
     dbLocation = os.path.expanduser("~/.cache/lnhl.db")
-    if(os.path.exists(dbLocation) == False):
+    if(os.path.exists("/opt/lnhl.db") == False):
         print("Please run config.py first!")
         sys.exit()
 
     #sql database connection/data grabbing
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
-    con = sqlite3.connect(dbLocation)
+    dbLocation = os.path.expanduser("/lib/python3.11/site-packages/lemmy_nhl/lnhl.db")
+    con = sqlite3.connect("/opt/lnhl.db")
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
@@ -183,7 +183,7 @@ def daemon():
     while(True):
         isGame()
         today = time.strftime("%a")
-        if(str(today) == "Sat" and standings == False):
+        if(str(today) == "Sun" and standings == False):
             create_post_standings()
             create_post_stats()
             standings = True
