@@ -101,7 +101,7 @@ def create_post_standings():
 def daemon():
     global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
     dbLocation = os.path.expanduser("~/.cache/lnhl.db")
-    if(os.path.exists("/lib/python3.11/site-packages/lemmy_nhl/lnhl.db") == False):
+    if(os.path.exists("/opt/lnhl.db") == False):
         print("Please run config.py first!")
         sys.exit()
 
