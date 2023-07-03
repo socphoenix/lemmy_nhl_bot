@@ -65,10 +65,11 @@ these the script will crash!
 
 ### run daemon
 
-Unix:
- > lemmy_nhl_daemon
+Linux:
+ > daemonize lemmy_nhl_daemon
  >
- > add " &" to run in the background. Working on creating service files but they are not done yet.
+ > FreeBSD:
+ > daemon lemmy_nhl_daemon
 
 
 ### run draft bot
