@@ -66,7 +66,7 @@ these the script will crash!
 ### run daemon
 
 Linux:
- > daemonize lemmy_nhl_daemon
+ > lemmy_nhl_daemon &
  >
  > FreeBSD:
  > daemon lemmy_nhl_daemon
