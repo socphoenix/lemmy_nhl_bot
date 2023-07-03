@@ -19,7 +19,7 @@ There is a [branch](https://github.com/socphoenix/lemmy_nhl_bot/tree/docker) of 
 To build and install with docker:
 
 > Download the following to a directory:
->
+> (these are available on the release page beginning with 1.5.1)
 > [Dockerfile](https://github.com/socphoenix/lemmy_nhl_bot/blob/c056d557951d1e9bae1ab602c22b9e5b7788c03b/Dockerfile)
 > [config.py](https://github.com/socphoenix/lemmy_nhl_bot/blob/c056d557951d1e9bae1ab602c22b9e5b7788c03b/config.py)
 >
