@@ -21,7 +21,7 @@ srv = ""
 
 #is game
 def isGame():
-    global gameOver, games, gamePK
+    global gameOver, games, gamePK, srv, postID
     today = time.strftime("%Y, %m, %d")
     today = str(today)
     today = today.split(", ")
@@ -36,9 +36,10 @@ def isGame():
             curTime = curTime.split(":")
             #compare 0, 1 on these if hour and minute >= to then start game
             if(int(curTime[0]) >= int(timeStart[0]) and int(curTime[1]) >= int(timeStart[1]) and gameOver == False):
-                   create_post_linescore()
-                   while(gameOver == False):
-                       gameTime()
+                create_post_linescore()
+                while(gameOver == False):
+                    gameTime()
+                srv.feature_post("Community", False, postID)
 
 #create post for linescore
 def create_post_linescore():
@@ -62,11 +63,25 @@ def create_post_linescore():
     postName = away_name + " vs. " + home_name + " " + gameType + " " + str(date)
     global CID, postID
     temp = CID
-    post = srv.create_post(temp, postName, body="")
-    postID = post.json().get("post_view")
-    postID = postID["post"].get("id")
+    posted = False
+    while(posted == False):
+        try:
+            post = srv.create_post(temp, postName, body="")
+            postID = post.json().get("post_view")
+            postID = postID["post"].get("id")
+            posted = True
+        except:
+            print("failed to post, trying again in 30 seconds")
+            time.sleep(30)
     if(isMod == "y"):
-        srv.feature_post("Community", True, postID)
+        feature = False
+        while(feature == False):
+            try:
+                srv.feature_post("Community", True, postID)
+                feature = True
+            except:
+                print("Failed to feature post, trying again in 30 seconds.")
+                time.sleep(30)
 
 
 #Linescore for game
@@ -88,14 +103,28 @@ def create_post_stats():
     today = time.strftime("%m-%d-%Y")
     title = "Team Stats for the Season as of " + today
     body = post_body.post_body_stats(teamID)
-    srv.create_post(CID, title, body=body)
+    posted = False
+    while(posted == False):
+        try:
+            srv.create_post(CID, title, body=body)
+            posted = True
+        except:
+            print("failed to post, trying again in 30 seconds.")
+            time.sleep(30)
 
 def create_post_standings():
     today = time.strftime("%m-%d-%Y")
     global CID
     postName = "NHL Standings as of " + today
     body = post_body.post_body_standings()
-    post = srv.create_post(CID, postName, body=body)
+    posted = False
+    while(posted == False):
+        try:
+            post = srv.create_post(CID, postName, body=body)
+            posted = True
+        except:
+            print("failed to post, trying again in 30 seconds.")
+            time.sleep(30)
 
 #main loop segment
 def daemon():
@@ -106,7 +135,6 @@ def daemon():
         sys.exit()
 
     #sql database connection/data grabbing
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
     con = sqlite3.connect(dbLocation)
     cur = con.cursor()
     #get login token
@@ -158,7 +186,7 @@ def daemon():
     while(True):
         isGame()
         today = time.strftime("%a")
-        if(str(today) == "Sat" and standings == False):
+        if(str(today) == "Sun" and standings == False):
             create_post_standings()
             create_post_stats()
             standings = True
