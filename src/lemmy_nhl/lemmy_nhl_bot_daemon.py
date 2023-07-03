@@ -85,7 +85,8 @@ def create_post_linescore():
             postID = postID["post"].get("id")
             posted = True
         except:
-            print("failed to post, trying again")
+            print("failed to post, trying again in 30 seconds")
+            time.sleep(30)
     if(isMod == "y"):
         feature = False
         while(feature == False):
@@ -93,7 +94,8 @@ def create_post_linescore():
                 srv.feature_post("Community", True, postID)
                 feature = True
             except:
-                print("Failed to feature post, trying again.")
+                print("Failed to feature post, trying again in 30 seconds.")
+                time.sleep(30)
 
 
 #Linescore for game
@@ -121,7 +123,8 @@ def create_post_stats():
             srv.create_post(CID, title, body=body)
             posted = True
         except:
-            print("failed to post, trying again.")
+            print("failed to post, trying again in 30 seconds.")
+            time.sleep(30)
 
 def create_post_standings():
     today = time.strftime("%m-%d-%Y")
@@ -134,17 +137,27 @@ def create_post_standings():
             post = srv.create_post(CID, postName, body=body)
             posted = True
         except:
-            print("failed to post, trying again.")
+            print("failed to post, trying again in 30 seconds.")
+            time.sleep(30)
 
 #main loop segment
 def daemon():
     global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
+<<<<<<< HEAD
+    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+    if(os.path.exists(dbLocation) == False):
+=======
     if(os.path.exists("/opt/lnhl.db") == False):
+>>>>>>> origin/docker
         print("Please run config.py first!")
         sys.exit()
 
     #sql database connection/data grabbing
+<<<<<<< HEAD
+    con = sqlite3.connect(dbLocation)
+=======
     con = sqlite3.connect("/opt/lnhl.db")
+>>>>>>> origin/docker
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
