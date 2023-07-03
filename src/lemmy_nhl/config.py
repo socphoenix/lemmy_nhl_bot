@@ -12,10 +12,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License."""
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/docker
 #basic config, will save the token key for future logins, team, community name
 import getpass
 from plemmy import LemmyHttp
