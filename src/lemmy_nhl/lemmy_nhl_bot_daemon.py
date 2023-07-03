@@ -18,7 +18,7 @@ from plemmy import LemmyHttp
 import os.path
 import time
 import sys
-import post_body
+from lemmy_nhl import post_body
 
 teamID = 0
 CID = 0
