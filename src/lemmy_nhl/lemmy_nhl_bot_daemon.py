@@ -17,6 +17,7 @@ import sqlite3
 from plemmy import LemmyHttp
 import os.path
 import time
+import datetime
 import sys
 from lemmy_nhl import post_body
 import datetime
@@ -34,7 +35,8 @@ srv = ""
 # create time based services
 # check for game today:
 
-# add side bar schedule
+
+#add side bar schedule task
 def scheduler():
     global games, srv
     date = datetime.datetime.now()
@@ -245,6 +247,15 @@ def daemon():
     r = cur.execute("SELECT * FROM schedule")
     games = r.fetchall()
 
+    #get info on which bots to use
+    try:
+        r = cur.execute("SELECT * FROM bots")
+        bots = r.fetchall()
+    except:
+        print("missing granular bot info, please consider running the config script again!")
+        print("App will assume you want to run all bots")
+        bots = [["y", "y", "y", "y"]]
+
     #use login token, check for game, get community id, create post, then loop
     srv = LemmyHttp(server)
     srv.key = token
@@ -256,12 +267,16 @@ def daemon():
 
     #main loop
     while(True):
-        isGame()
+        # bots(stats, standings, schedule, linescore)")
+        if(bots[0][3] == "y"):
+            isGame()
         today = time.strftime("%a")
         if(str(today) == "Sun" and standings == False):
-            create_post_standings()
-            create_post_stats()
-            if(isMod == "y"):
+            if(bots[0][1] == "y"):
+                create_post_standings()
+            if(bots[0][0] == "y"):
+                create_post_stats()
+            if(isMod == "y" and bots[0][2] == "y"):
                 scheduler()
             standings = True
             stats = True
