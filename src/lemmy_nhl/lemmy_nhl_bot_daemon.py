@@ -19,6 +19,7 @@ import os.path
 import time
 import sys
 from lemmy_nhl import post_body
+import datetime
 
 teamID = 0
 CID = 0
@@ -32,6 +33,49 @@ newSchedule = False
 srv = ""
 # create time based services
 # check for game today:
+
+# add side bar schedule
+def scheduler():
+    global games, srv
+    date = datetime.datetime.now()
+    today = date.strftime("%Y, %m, %d").split(", ")
+    scheduleBody = "*** Upcoming Games: \n | Opponent | Time | \n | ---- | ---- | \n"
+    for y in range(7):
+        pm = ""
+        for x in range(len(games)):
+            gameToday = games[x][1]
+            gameToday = gameToday.split("-")
+            if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
+                r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(games[x][0]) + "/linescore")
+                team = int(r.json().get("teams").get("home").get("team").get("id"))
+                if(team == teamID):
+                    team = int(r.json().get("teams").get("away").get("team").get("id"))
+                teamName = r.json().get("teams").get("home").get("team").get("name")
+                timeStart = games[x][2]
+                timeStart = timeStart.split(":")
+                times = [int(timeStart[0]) - 4, int(timeStart[0]) - 5]
+                if(times[0] > 12):
+                    times[0] = times[0] - 12
+                    pm = "p.m."
+                if(times[1] > 12):
+                    times[1] = times[1] - 12
+                    pm = "p.m."
+                times[0] = str(times[0]) + ":" + str(timeStart[1])
+                times[1] = str(times[1]) + ":" + str(timeStart[1])
+                scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
+        date += datetime.timedelta(days=1)
+        today = date.strftime("%Y, %m, %d").split(", ")
+    temp = srv.get_community(CID)
+    temp = temp.json().get("community_view").get("community").get("description")
+    temp = temp.split("*** ")
+    body = temp[0] + scheduleBody
+    posted = False
+    while(posted == False):
+        try:
+            srv.edit_community(CID, description = body)
+            posted = True
+        except:
+            print("failed to post standings, trying again.")
 
 #is game
 def isGame():
@@ -202,6 +246,8 @@ def daemon():
         if(str(today) == "Sun" and standings == False):
             create_post_standings()
             create_post_stats()
+            if(isMod == "y"):
+                scheduler()
             standings = True
             stats = True
             newSchedule = True
