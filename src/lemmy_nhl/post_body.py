@@ -158,10 +158,10 @@ def post_body_linescore(gamePK):
         body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
         body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
         body = body +  str(period[1].get("away").get("goals")) + " | " +  str(period[2].get("away").get("goals")) + " | "
-        body = body + away_goals + " | \n"
+        body = body + str(away_goals) + " | \n"
         body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
         body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
-        body = body + home_goals + " | \n"
+        body = body + str(home_goals) + " | \n"
     else:
         body = body + "| Team | Period 1: | Period 2:  | Period 3: | OT | Totals | \n"
         body = body + "| ----- | -------- | ---------- | --------- | ------| ----- | \n"
@@ -203,4 +203,10 @@ def post_body_linescore(gamePK):
     body = body + "| ----- | ------------ | \n"
     body = body + "| " + away_name + " | " + str(away_power) + " | \n"
     body = body + "| " + home_name + " | " + str(home_power) + " | \n"
+    # game highlights
+    r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/content")
+    body = body + "# Game Highlights \n"
+    for x in range(len(r.json().get("highlights").get("scoreboard").get("items"))):
+        body = body + "\n" + "[" + r.json().get("highlights").get("scoreboard").get("items")[x].get("description") + "]("
+        body = body + r.json().get("highlights").get("scoreboard").get("items")[x].get("playbacks")[3].get("url") + ") \n"
     return body, gameOver
