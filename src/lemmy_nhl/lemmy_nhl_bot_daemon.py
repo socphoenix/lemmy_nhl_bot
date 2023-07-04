@@ -34,6 +34,7 @@ srv = ""
 # create time based services
 # check for game today:
 
+#add side bar schedule task
 def scheduler():
     global games, srv
     date = datetime.datetime.now()
@@ -96,6 +97,21 @@ def isGame():
                 create_post_linescore()
                 while(gameOver == False):
                     gameTime()
+                time.sleep(360)
+                r = srv.get_post(postID)
+                posted = False
+                while(posted == False):
+                    try:
+                        recap = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/content")
+                        recap = recap.json()
+                        body2 = r.json().get("post_view").get("post").get("body") + "\n\n "
+                        body2 = body2 + "# [recap]("
+                        body2 = body2 + str(recap.get("media").get("epg")[2].get("items")[0].get("playbacks")[3].get("url")) + ")"
+                        srv.edit_post(postID, body=body2)
+                        posted = True
+                    except:
+                        print("Failed to get recap, waiting 60 seconds.")
+                        time.sleep(60)
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
