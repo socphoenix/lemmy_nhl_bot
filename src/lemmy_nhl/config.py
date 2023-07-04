@@ -29,6 +29,26 @@ def config():
     password = getpass.getpass('Password: ')
     isMod = input("Is this account a mod of the community? (needed to pin posts) (y/n): ")
     isMod = isMod.lower()
+    defaults = input("Would you like to enable all services, or choose individually (stats, standings, schedule, game updates) y/n: ")
+    defaults = defaults.lower()
+    bots = ["n", "n", "n", "n"]
+    if(defaults == "y"):
+        print("Excellent choice, setting up services and scraping the schedule now.")
+        for x in range(len(bots)):
+            bots[x] = "y"
+    elif(defaults == "n"):
+        bots[0]= input("Would you like to enable the stat bot? (y/n): ")
+        bots[0] = bots[0].lower()
+        bots[1] = input("Would you like to enable the standings bot? (y/n): ")
+        bots[1] = bots[1].lower()
+        bots[2] = input("Would you like to enable the side-bar schedule bot? (y/n): ")
+        bots[2] = bots[2].lower()
+        bots[3] = input("Would you like to enable the live game thread bot? (y/n): ")
+        bots[3] = bots[3].lower()
+    else:
+        print("You selected an invalid response. Assuming you want all the bots")
+        for x in range(len(bots)):
+            bots[x] = "y"
 
     t = requests.get("https://statsapi.web.nhl.com/api/v1/teams")
     teams = t.json().get("teams")
@@ -59,6 +79,14 @@ def config():
     except:
         cur.execute("DELETE FROM schedule")
         con.commit()
+    try:
+        cur.execute("CREATE TABLE bots(stats, standings, schedule, linescore)")
+        cur.execute("INSERT INTO bots VALUES (?, ?, ?, ?);", (bots[0], bots[1], bots[2], bots[3]))
+        con.commit()
+    except:
+        cur.execute("DELETE FROM bots")
+        cur.execute("INSERT INTO bots VALUES (?, ?, ?, ?);", (bots[0], bots[1], bots[2], bots[3]))
+        con.commit()
 
     #scrape schedule and times, output to database under schedule table
     today = time.strftime("%Y")
@@ -75,3 +103,4 @@ def config():
         cur.execute("INSERT INTO schedule VALUES (?, ?, ?);", (gamePK, date[0], date[1]))
         con.commit()
         j = j + 1
+    print("Configuration done!")
