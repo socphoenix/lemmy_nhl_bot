@@ -71,6 +71,7 @@ Linux:
  > FreeBSD:
  > daemon lemmy_nhl_daemon
 
+
 ### run draft bot
 
 Unix: lemmy_nhl_draft
