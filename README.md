@@ -28,6 +28,8 @@ To build and install with docker:
 > python3 config.py
 >
 > docker build -t lemmy_nhl_bot .
+>
+> docker run lemmy_nhl_bot &
 
 
 # Building:

@@ -25,13 +25,13 @@ def draft():
     finishedR1 = False
     draftYear = datetime.now().year
     # talk to sqlite database
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+    dbLocation = os.path.expanduser("/opt/lnhl.db")
     if(os.path.exists(dbLocation) == False):
         print("Please run config.py first!")
         sys.exit()
 
     #sql database connection/data grabbing
-    con = sqlite3.connect(dbLocation)
+    con = sqlite3.connect("/opt/lnhl.db")
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")

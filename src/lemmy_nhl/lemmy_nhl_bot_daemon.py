@@ -20,6 +20,7 @@ import time
 import datetime
 import sys
 from lemmy_nhl import post_body
+import datetime
 
 teamID = 0
 CID = 0
@@ -33,6 +34,7 @@ newSchedule = False
 srv = ""
 # create time based services
 # check for game today:
+
 
 #add side bar schedule task
 def scheduler():
@@ -202,13 +204,12 @@ def create_post_standings():
 #main loop segment
 def daemon():
     global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
-    if(os.path.exists(dbLocation) == False):
+    if(os.path.exists("/opt/lnhl.db") == False):
         print("Please run config.py first!")
         sys.exit()
 
     #sql database connection/data grabbing
-    con = sqlite3.connect(dbLocation)
+    con = sqlite3.connect("/opt/lnhl.db")
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
