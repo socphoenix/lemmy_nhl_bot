@@ -31,7 +31,7 @@ def draft():
         sys.exit()
 
     #sql database connection/data grabbing
-    con = sqlite3.connect("lnhl.db")
+    con = sqlite3.connect(dbLocation)
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
