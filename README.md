@@ -57,13 +57,37 @@ To build and install with docker:
 > pip install lemmy_nhl-2.0.0-py3-none-any.whl
 
 ## Usage:
-Before starting bot.py, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without
-these the script will crash!
+Before starting lemmy_nhl_daemon, please make sure to run config.py! It is needed to save your login token and teamID/community Name. Without these the script will not work!
 
 ### Run config.py:
 > Linux: lemmy_nhl_config
 
->FreeBSD: lemmy_nhl_config.py ##This requires path set. for sh (default shell): "PATH=${PATH}:/home/'put user here'/.local/bin" "export PATH" (as an interesting note, python seems to only add the path to the root user during install)
+>FreeBSD: lemmy_nhl_config ##This requires path set. for sh (default shell): "PATH=${PATH}:/home/'put user here'/.local/bin" "export PATH" (as an interesting note, python seems to only add the path to the root user during install)
+
+Configuration Options:
+#### Server: Which server the bot will connect to e.g.(https://enterprise.lemmy.ml)
+
+#### username: account name of the bot (please don't use your normal account for this bot! it's bad practice. Create a bot account instead)
+
+#### password: Where your password should go
+
+#### teamID: pick your team number from the options listed e.g.(4 for the Philadelphia Flyers)
+
+#### Community: name of the community you are posting to
+
+#### isMod: This bot can't pin posts or run the schedule bot without moderator privileges on the community
+
+#### bots: select y on the first prompt to enable them all. The bots are:
+    - stats: post a selection of stats from your selected team once per week (Sunday)
+
+    - standings: post league-wide standings to the community once per week (Sunday)
+
+    - schedule: Every Sunday update the sidebar with the next weeks games (note this assumes it can cut and replace anything
+       that comes after a "*** " mark on the sidebar. It will preserve everything before that like community rules)
+
+    - linescore: This will check for a game in progress every 5 minutes, and then create/pin a post to the community
+        that displays time left, goals broken up by period, shots on goal broken up by period, if a team is on the powerplay,
+        any video highlights the api will give, and after the game adds a recap to the game post before unpinning the post.
 
 ### run daemon
 
@@ -73,6 +97,8 @@ Linux:
  > FreeBSD:
  > daemon lemmy_nhl_daemon
 
+ > Docker: docker run lemmy_nhl (or whatever you named the container image during building)
+
 
 ### run draft bot
 
@@ -81,7 +107,7 @@ Unix: lemmy_nhl_draft
 
 # See it in action!
 
-To see what the bot can currently do, look here: [pinned game](https://enterprise.lemmy.ml/post/417088), [stats](https://enterprise.lemmy.ml/post/417090), [standings](https://enterprise.lemmy.ml/post/417089)
+To see what the bot can currently do, look here: [pinned game](https://enterprise.lemmy.ml/post/417139), [stats](https://enterprise.lemmy.ml/post/417090), [standings](https://enterprise.lemmy.ml/post/417089)
 
 
 # Shared Libraries

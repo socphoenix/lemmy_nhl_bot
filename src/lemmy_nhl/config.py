@@ -29,7 +29,7 @@ def config():
     password = getpass.getpass('Password: ')
     isMod = input("Is this account a mod of the community? (needed to pin posts) (y/n): ")
     isMod = isMod.lower()
-    defaults = input("Would you like to enable all services, or choose individually (stats, standings, schedule, game updates) y/n: ")
+    defaults = input("Would you like to enable all services, or choose individually (stats, standings, schedule, linescore) y/n: ")
     defaults = defaults.lower()
     bots = ["n", "n", "n", "n"]
     if(defaults == "y"):
