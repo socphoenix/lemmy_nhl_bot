@@ -33,6 +33,7 @@ teamID = 0
 newSchedule = False
 srv = ""
 inSeason = False
+scheduled = False
 # create time based services
 # check for game today:
 
@@ -43,7 +44,11 @@ def seasonStart():
     today = date.strftime("%Y, %m, %d").split(", ")
     lastGame = games[len(games)][1]
     lastGame = lastGame.split("-")
-    if(inSeason == False and int(today[1]) >= 10):
+    firstGame = games[0][1]
+    firstGame = firstGame.split("-")
+    if(inSeason == False and int(today[1]) > 10):
+        inSeason = True
+    elif(inSeason == False and int(today[1]) == 10 and int(today[2]) > int(firstGame[2])):
         inSeason = True
     elif(int(today[1] == int(lastGame[1])) and int(today[2]) > int(lastGame[2])):
         inSeason = False
@@ -288,13 +293,16 @@ def daemon():
         if(bots[0][3] == "y"):
             isGame()
         today = time.strftime("%a")
+        #run scheduler weekly no matter what
+        if(str(today == "Sun" and scheduled == False)):
+            if(isMod == "y" and bots[0][2] == "y"):
+                scheduler()
+                scheduled = True
         if(str(today) == "Sun" and standings == False and inSeason == True):
             if(bots[0][1] == "y"):
                 create_post_standings()
             if(bots[0][0] == "y"):
                 create_post_stats()
-            if(isMod == "y" and bots[0][2] == "y"):
-                scheduler()
             standings = True
             stats = True
         elif(str(today) == "Sun" and newSchedule == False):
@@ -321,4 +329,5 @@ def daemon():
             standings = False
             stats = False
             newSchedule = False
+            scheduled = False
         time.sleep(300)
