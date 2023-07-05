@@ -32,9 +32,23 @@ postID = 0
 teamID = 0
 newSchedule = False
 srv = ""
+inSeason = False
 # create time based services
 # check for game today:
 
+
+def seasonStart():
+    global games, inSeason
+    date = datetime.datetime.now()
+    today = date.strftime("%Y, %m, %d").split(", ")
+    lastGame = games[len(games)][1]
+    lastGame = lastGame.split("-")
+    if(inSeason == False and int(today[1]) >= 10):
+        inSeason = True
+    elif(int(today[1] == int(lastGame[1])) and int(today[2]) > int(lastGame[2])):
+        inSeason = False
+    elif(inSeason == True and int(today[1]) > int(lastGame[1])):
+        inSeason = False
 
 #add side bar schedule task
 def scheduler():
@@ -203,7 +217,7 @@ def create_post_standings():
 
 #main loop segment
 def daemon():
-    global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
+    global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv, inSeason
     dbLocation = os.path.expanduser("~/.cache/lnhl.db")
     if(os.path.exists(dbLocation) == False):
         print("Please run config.py first!")
@@ -268,11 +282,13 @@ def daemon():
 
     #main loop
     while(True):
+        # check for in Season for team:
+        seasonStart()
         # bots(stats, standings, schedule, linescore)")
         if(bots[0][3] == "y"):
             isGame()
         today = time.strftime("%a")
-        if(str(today) == "Sun" and standings == False):
+        if(str(today) == "Sun" and standings == False and inSeason == True):
             if(bots[0][1] == "y"):
                 create_post_standings()
             if(bots[0][0] == "y"):
@@ -281,6 +297,7 @@ def daemon():
                 scheduler()
             standings = True
             stats = True
+        elif(str(today) == "Sun" and newSchedule == False):
             newSchedule = True
             # get new schedule weekly to catch playoffs
             cur.execute("DELETE FROM schedule")
