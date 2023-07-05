@@ -292,6 +292,8 @@ def daemon():
         # bots(stats, standings, schedule, linescore)")
         if(bots[0][3] == "y"):
             isGame()
+
+
         today = time.strftime("%a")
         #run scheduler weekly no matter what
         if(str(today == "Sun" and scheduled == False)):

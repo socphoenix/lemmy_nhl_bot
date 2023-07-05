@@ -28,6 +28,8 @@ To build and install with docker:
 > python3 config.py
 >
 > docker build -t lemmy_nhl_bot .
+>
+> docker run lemmy_nhl_bot &
 
 
 # Building:
@@ -88,6 +90,8 @@ Configuration Options:
     - linescore: This will check for a game in progress every 5 minutes, and then create/pin a post to the community
         that displays time left, goals broken up by period, shots on goal broken up by period, if a team is on the powerplay,
         any video highlights the api will give, and after the game adds a recap to the game post before unpinning the post.
+
+    ** note on bots. Current version will check and only start/run stats/standings beginning in October.
 
 ### run daemon
 
