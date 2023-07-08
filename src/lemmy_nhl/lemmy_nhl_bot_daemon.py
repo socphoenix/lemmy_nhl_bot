@@ -20,6 +20,7 @@ import time
 import datetime
 import sys
 from lemmy_nhl import post_body
+from plemmy.responses import GetCommunityResponse
 import datetime
 
 teamID = 0
@@ -86,8 +87,7 @@ def scheduler():
                 scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
-    temp = srv.get_community(CID)
-    temp = temp.json().get("community_view").get("community").get("description")
+    temp = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.description
     temp = temp.split("*** ")
     body = temp[0] + scheduleBody
     posted = False
@@ -279,11 +279,8 @@ def daemon():
     #use login token, check for game, get community id, create post, then loop
     srv = LemmyHttp(server)
     srv.key = token
-    request = srv.get_community(None, communityName)
     global CID
-    CID = request.json().get("community_view")
-    CID = CID["community"].get("id")
-
+    CID = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.id
 
     #main loop
     while(True):

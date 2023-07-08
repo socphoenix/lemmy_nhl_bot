@@ -16,6 +16,7 @@ import requests
 import sys
 import time
 from plemmy import LemmyHttp
+from plemmy.responses import GetCommunityResponse
 from datetime import datetime
 import os.path
 import sqlite3
@@ -60,9 +61,7 @@ def draft():
     requested = False
     while(requested == False):
         try:
-            request = srv.get_community(None, communityName)
-            CID = request.json().get("community_view")
-            CID = CID["community"].get("id")
+            CID = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.id
             requested = True
         except:
             print("failed to get community, trying again")
