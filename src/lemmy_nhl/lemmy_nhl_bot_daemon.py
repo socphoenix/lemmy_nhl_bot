@@ -43,7 +43,7 @@ def seasonStart():
     global games, inSeason
     date = datetime.datetime.now()
     today = date.strftime("%Y, %m, %d").split(", ")
-    lastGame = games[len(games)][1]
+    lastGame = games[len(games)-1][1]
     lastGame = lastGame.split("-")
     firstGame = games[0][1]
     firstGame = firstGame.split("-")
@@ -229,7 +229,7 @@ def daemon():
         sys.exit()
 
     #sql database connection/data grabbing
-    con = sqlite3.connect("dbLocation")
+    con = sqlite3.connect(dbLocation)
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
