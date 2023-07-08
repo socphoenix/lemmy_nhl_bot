@@ -61,7 +61,7 @@ def draft():
     requested = False
     while(requested == False):
         try:
-            CID = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.id
+            CID = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.id
             requested = True
         except:
             print("failed to get community, trying again")

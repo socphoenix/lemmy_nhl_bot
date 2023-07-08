@@ -58,7 +58,7 @@ def seasonStart():
 
 #add side bar schedule task
 def scheduler():
-    global games, srv
+    global games, srv, communityName
     date = datetime.datetime.now()
     today = date.strftime("%Y, %m, %d").split(", ")
     scheduleBody = "*** Upcoming Games: \n | Opponent | Time | \n | ---- | ---- | \n"
@@ -87,7 +87,7 @@ def scheduler():
                 scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
-    temp = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.description
+    temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
     temp = temp.split("*** ")
     body = temp[0] + scheduleBody
     posted = False
@@ -280,7 +280,7 @@ def daemon():
     srv = LemmyHttp(server)
     srv.key = token
     global CID
-    CID = GetCommunityResponse(srv.get_community(name="bottest")).community_view.community.id
+    CID = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.id
 
     #main loop
     while(True):
