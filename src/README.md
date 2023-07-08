@@ -36,7 +36,7 @@ To build and install with docker:
 
     This script requires the following to be installed from pip: plemmy, requests, json, build
 
-> pip install plemmy   source is https://github.com/tjkessler/plemmy/  Many thanks for tjkessler for the simple to use library!
+> pip install plemmy >= 0.3.0  source is https://github.com/tjkessler/plemmy/  Many thanks for tjkessler for the simple to use library!
 
 > pip install requests
 
