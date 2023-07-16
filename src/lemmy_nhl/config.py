@@ -19,11 +19,36 @@ import sqlite3
 import requests
 import time
 import os.path
+import sys
+
+def newToken():
+    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+    server = input("server address (make sure to include the https://): ")
+    username = input("Username: ")
+    password = getpass.getpass('Password: ')
+    srv = LemmyHttp(server)
+    r = srv.login(username, password)
+    token = r.json().get("jwt")
+    con = sqlite3.connect(dbLocation)
+    cur = con.cursor()
+    r = cur.execute("SELECT token FROM user")
+    temp = r.fetchall()
+    oldToken = str(temp[0])
+    oldToken = token.lstrip("('")
+    oldToken = token.rstrip("',)")
+    cur.execute("UPDATE user SET token = ? , WHERE token = ?", (token, oldToken))
+    con.commit()
+    print("New Token saved.")
+    sys.exit()
 
 def config():
     dbLocation = os.path.expanduser("~/.cache/lnhl.db")
     print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
     print("If database already exists all data will be overwritten!")
+    justToken = input("Do you just need to update your token? y/n ")
+    justToken = newToken.lower()
+    if(justToken == "y"):
+        newToken()
     server = input("server address (make sure to include the https://): ")
     username = input("Username: ")
     password = getpass.getpass('Password: ')
