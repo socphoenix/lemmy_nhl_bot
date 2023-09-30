@@ -162,7 +162,7 @@ def post_body_linescore(gamePK):
         body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
         body = body + " " + " | " + " " + " | "
         body = body + str(home_goals) + " | \n"
-    if(numPeriods == 1):
+    elif(numPeriods == 1):
         body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
         body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
         body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
@@ -171,7 +171,7 @@ def post_body_linescore(gamePK):
         body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
         body = body + str(period[1].get("home").get("goals")) + " | " + " " + " | "
         body = body + str(home_goals) + " | \n"
-    if(numPeriods == 2):
+    elif(numPeriods == 2):
         body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
         body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
         body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
@@ -199,7 +199,7 @@ def post_body_linescore(gamePK):
         body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
         body = body + " " + " | " + " " + " | "
         body = body + str(home_shots) + " | \n"
-    if(numPeriods == 1):
+    elif(numPeriods == 1):
         body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
         body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
         body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
@@ -208,7 +208,7 @@ def post_body_linescore(gamePK):
         body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
         body = body + str(period[1].get("home").get("shotsOnGoal")) + " | " + " " + " | "
         body = body + str(home_shots) + " | \n"
-    if(numPeriods == 2):
+    elif(numPeriods == 2):
         body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
         body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
         body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
