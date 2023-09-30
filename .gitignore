@@ -6,3 +6,4 @@ __pycache__/
 build/
 dist/
 src/lemmy_nhl.egg-info/
+.core

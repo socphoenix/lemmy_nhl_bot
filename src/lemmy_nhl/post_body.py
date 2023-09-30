@@ -153,7 +153,25 @@ def post_body_linescore(gamePK):
     body = body + "| ------- | ------------- | \n"
     body = body + "| " + str(currentPeriod) + " | " + timeLeft + " | \n"
     body = body + "## Scores: \n"
-    if(numPeriods <= 2):
+    if(numPeriods <= 0):
+        body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
+        body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
+        body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
+        body = body +  " " + " | " +  " " + " | "
+        body = body + str(away_goals) + " | \n"
+        body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
+        body = body + " " + " | " + " " + " | "
+        body = body + str(home_goals) + " | \n"
+    if(numPeriods == 1):
+        body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
+        body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
+        body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
+        body = body +  str(period[1].get("away").get("goals")) + " | " +  " " + " | "
+        body = body + str(away_goals) + " | \n"
+        body = body + "| " + home_name + " | " +  str(period[0].get("home").get("goals")) + " | "
+        body = body + str(period[1].get("home").get("goals")) + " | " + " " + " | "
+        body = body + str(home_goals) + " | \n"
+    if(numPeriods == 2):
         body = body + "| Team | Period 1: | Period 2:  | Period 3: | Totals | \n"
         body = body + "| ----- | -------- | ---------- | ----------- | ------| \n"
         body = body + "| " + away_name + " | " +  str(period[0].get("away").get("goals")) + " | "
@@ -172,7 +190,25 @@ def post_body_linescore(gamePK):
         body = body + str(period[1].get("home").get("goals")) + " | " + str(period[2].get("home").get("goals")) + " | "
         body = body + str(period[numPeriods].get("home").get("goals")) + " | " + str(home_goals) + " | \n"
     body = body + "## Shots on Goal: \n"
-    if(numPeriods <= 2):
+    if(numPeriods <= 0):
+        body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
+        body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
+        body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
+        body = body + " " + " | " + " " + " | "
+        body = body + str(away_shots) + " | \n"
+        body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
+        body = body + " " + " | " + " " + " | "
+        body = body + str(home_shots) + " | \n"
+    if(numPeriods == 1):
+        body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
+        body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
+        body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("away").get("shotsOnGoal")) + " | " + " " + " | "
+        body = body + str(away_shots) + " | \n"
+        body = body + "| " + home_name + " | " + str(period[0].get("home").get("shotsOnGoal")) + " | "
+        body = body + str(period[1].get("home").get("shotsOnGoal")) + " | " + " " + " | "
+        body = body + str(home_shots) + " | \n"
+    if(numPeriods == 2):
         body = body + "| Team | Period 1 | Period 2 | Period 3 | Total Shots | \n"
         body = body + "| ----- | ------- | -------- | -------- | ----------- | \n"
         body = body + "| " + away_name + " | " + str(period[0].get("away").get("shotsOnGoal")) + " | "
