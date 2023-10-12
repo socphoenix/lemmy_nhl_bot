@@ -46,8 +46,8 @@ def config():
     print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
     print("If database already exists all data will be overwritten!")
     justToken = input("Do you just need to update your token? y/n ")
-    justToken = newToken.lower()
-    if(justToken == "y"):
+    justToken = newToken
+    if(justToken == "y" or justToken == "Y"):
         newToken()
     server = input("server address (make sure to include the https://): ")
     username = input("Username: ")
