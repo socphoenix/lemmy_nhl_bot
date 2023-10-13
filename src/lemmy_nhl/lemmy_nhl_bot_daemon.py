@@ -87,16 +87,19 @@ def scheduler():
                 scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
-    temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
-    temp = temp.split("*** ")
-    body = temp[0] + scheduleBody
-    posted = False
-    while(posted == False):
-        try:
-            srv.edit_community(CID, description = body)
-            posted = True
-        except:
-            print("failed to post standings, trying again.")
+    try:
+        temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
+        temp = temp.split("*** ")
+        body = temp[0] + scheduleBody
+        posted = False
+        while(posted == False):
+            try:
+                srv.edit_community(CID, description = body)
+                posted = True
+            except:
+                print("failed to post standings, trying again.")
+    except:
+        print("Failed to contact server, sidebar not updated")
 
 #is game
 def isGame():
