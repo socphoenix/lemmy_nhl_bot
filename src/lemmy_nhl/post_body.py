@@ -242,7 +242,10 @@ def post_body_linescore(gamePK):
     # game highlights
     r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/content")
     body = body + "# Game Highlights \n"
-    for x in range(len(r.json().get("highlights").get("scoreboard").get("items"))):
-        body = body + "\n" + "[" + r.json().get("highlights").get("scoreboard").get("items")[x].get("description") + "]("
-        body = body + r.json().get("highlights").get("scoreboard").get("items")[x].get("playbacks")[3].get("url") + ") \n"
-    return body, gameOver
+    try:
+        for x in range(len(r.json().get("highlights").get("scoreboard").get("items"))):
+            body = body + "\n" + "[" + r.json().get("highlights").get("scoreboard").get("items")[x].get("description") + "]("
+            body = body + r.json().get("highlights").get("scoreboard").get("items")[x].get("playbacks")[3].get("url") + ") \n"
+        return body, gameOver
+    except:
+        return body, GameOver

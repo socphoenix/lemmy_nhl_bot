@@ -35,6 +35,7 @@ newSchedule = False
 srv = ""
 inSeason = False
 scheduled = False
+recap_timeout = 0
 # create time based services
 # check for game today:
 
@@ -87,16 +88,19 @@ def scheduler():
                 scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
-    temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
-    temp = temp.split("*** ")
-    body = temp[0] + scheduleBody
-    posted = False
-    while(posted == False):
-        try:
-            srv.edit_community(CID, description = body)
-            posted = True
-        except:
-            print("failed to post standings, trying again.")
+    try:
+        temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
+        temp = temp.split("*** ")
+        body = temp[0] + scheduleBody
+        posted = False
+        while(posted == False):
+            try:
+                srv.edit_community(CID, description = body)
+                posted = True
+            except:
+                print("failed to post standings, trying again.")
+    except:
+        print("Failed to contact server, sidebar not updated")
 
 #is game
 def isGame():
@@ -133,6 +137,10 @@ def isGame():
                     except:
                         print("Failed to get recap, waiting 60 seconds.")
                         time.sleep(60)
+                        recap_timeout = recap_timeout + 1
+                        if(recap_timeout > 4):
+                            print("Could not get recap ending attempts")
+                            posted = True
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
