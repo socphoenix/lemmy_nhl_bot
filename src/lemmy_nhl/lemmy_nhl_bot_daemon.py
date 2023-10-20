@@ -35,6 +35,7 @@ newSchedule = False
 srv = ""
 inSeason = False
 scheduled = False
+recap_timeout = 0
 # create time based services
 # check for game today:
 
@@ -136,6 +137,10 @@ def isGame():
                     except:
                         print("Failed to get recap, waiting 60 seconds.")
                         time.sleep(60)
+                        recap_timeout = recap_timeout + 1
+                        if(recap_timeout > 4):
+                            print("Could not get recap ending attempts")
+                            posted = True
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
