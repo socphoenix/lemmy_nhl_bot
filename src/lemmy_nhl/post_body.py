@@ -248,4 +248,4 @@ def post_body_linescore(gamePK):
             body = body + r.json().get("highlights").get("scoreboard").get("items")[x].get("playbacks")[3].get("url") + ") \n"
         return body, gameOver
     except:
-        return body, GameOver
+        return body, gameOver
