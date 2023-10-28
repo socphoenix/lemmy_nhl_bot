@@ -60,9 +60,10 @@ def seasonStart():
 #add side bar schedule task
 def scheduler():
     global games, srv, communityName
+    teamName = ""
     date = datetime.datetime.now()
     today = date.strftime("%Y, %m, %d").split(", ")
-    scheduleBody = "*** Upcoming Games: \n | Opponent | Time | \n | ---- | ---- | \n"
+    scheduleBody = "*** Upcoming Games: \n\n | Opponent | Time | \n | ---- | ---- | \n"
     for y in range(7):
         pm = ""
         for x in range(len(games)):
@@ -72,8 +73,9 @@ def scheduler():
                 r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(games[x][0]) + "/linescore")
                 team = int(r.json().get("teams").get("home").get("team").get("id"))
                 if(team == teamID):
-                    team = int(r.json().get("teams").get("away").get("team").get("id"))
-                teamName = r.json().get("teams").get("home").get("team").get("name")
+                    teamName = r.json().get("teams").get("away").get("team").get("name")
+                else:
+                    teamName = r.json().get("teams").get("home").get("team").get("name")
                 timeStart = games[x][2]
                 timeStart = timeStart.split(":")
                 times = [int(timeStart[0]) - 4, int(timeStart[0]) - 5]
