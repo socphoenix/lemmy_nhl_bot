@@ -17,8 +17,10 @@ import sqlite3
 from plemmy import LemmyHttp
 import os.path
 import time
+import datetime
 import sys
 from lemmy_nhl import post_body
+from plemmy.responses import GetCommunityResponse
 import datetime
 
 teamID = 0
@@ -31,15 +33,37 @@ postID = 0
 teamID = 0
 newSchedule = False
 srv = ""
+inSeason = False
+scheduled = False
+recap_timeout = 0
 # create time based services
 # check for game today:
 
-# add side bar schedule
-def scheduler():
-    global games, srv
+
+def seasonStart():
+    global games, inSeason
     date = datetime.datetime.now()
     today = date.strftime("%Y, %m, %d").split(", ")
-    scheduleBody = "*** Upcoming Games: \n | Opponent | Time | \n | ---- | ---- | \n"
+    lastGame = games[len(games)-1][1]
+    lastGame = lastGame.split("-")
+    firstGame = games[0][1]
+    firstGame = firstGame.split("-")
+    if(inSeason == False and int(today[1]) > 10):
+        inSeason = True
+    elif(inSeason == False and int(today[1]) == 10 and int(today[2]) > int(firstGame[2])):
+        inSeason = True
+    elif(int(today[1] == int(lastGame[1])) and int(today[2]) > int(lastGame[2])):
+        inSeason = False
+    elif(inSeason == True and int(today[1]) > int(lastGame[1])):
+        inSeason = False
+
+#add side bar schedule task
+def scheduler():
+    global games, srv, communityName
+    teamName = ""
+    date = datetime.datetime.now()
+    today = date.strftime("%Y, %m, %d").split(", ")
+    scheduleBody = "*** Upcoming Games: \n\n | Opponent | Time | \n | ---- | ---- | \n"
     for y in range(7):
         pm = ""
         for x in range(len(games)):
@@ -49,8 +73,9 @@ def scheduler():
                 r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(games[x][0]) + "/linescore")
                 team = int(r.json().get("teams").get("home").get("team").get("id"))
                 if(team == teamID):
-                    team = int(r.json().get("teams").get("away").get("team").get("id"))
-                teamName = r.json().get("teams").get("home").get("team").get("name")
+                    teamName = r.json().get("teams").get("away").get("team").get("name")
+                else:
+                    teamName = r.json().get("teams").get("home").get("team").get("name")
                 timeStart = games[x][2]
                 timeStart = timeStart.split(":")
                 times = [int(timeStart[0]) - 4, int(timeStart[0]) - 5]
@@ -65,17 +90,19 @@ def scheduler():
                 scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
-    temp = srv.get_community(CID)
-    temp = temp.json().get("community_view").get("community").get("description")
-    temp = temp.split("*** ")
-    body = temp[0] + scheduleBody
-    posted = False
-    while(posted == False):
-        try:
-            srv.edit_community(CID, description = body)
-            posted = True
-        except:
-            print("failed to post standings, trying again.")
+    try:
+        temp = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.description
+        temp = temp.split("*** ")
+        body = temp[0] + scheduleBody
+        posted = False
+        while(posted == False):
+            try:
+                srv.edit_community(CID, description = body)
+                posted = True
+            except:
+                print("failed to post standings, trying again.")
+    except:
+        print("Failed to contact server, sidebar not updated")
 
 #is game
 def isGame():
@@ -112,6 +139,10 @@ def isGame():
                     except:
                         print("Failed to get recap, waiting 60 seconds.")
                         time.sleep(60)
+                        recap_timeout = recap_timeout + 1
+                        if(recap_timeout > 4):
+                            print("Could not get recap ending attempts")
+                            posted = True
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
@@ -201,13 +232,14 @@ def create_post_standings():
 
 #main loop segment
 def daemon():
-    global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv
-    if(os.path.exists("/opt/lnhl.db") == False):
+    global token, communityName, server, teamID, isMod, games, standings, stats, post, CID, newSchedule, gameOver, srv, inSeason
+    dbLocation = os.path.expanduser("/opt/lnhl.db")
+    if(os.path.exists(dbLocation) == False):
         print("Please run config.py first!")
         sys.exit()
 
     #sql database connection/data grabbing
-    con = sqlite3.connect("/opt/lnhl.db")
+    con = sqlite3.connect(dbLocation)
     cur = con.cursor()
     #get login token
     r = cur.execute("SELECT token FROM user")
@@ -245,26 +277,44 @@ def daemon():
     r = cur.execute("SELECT * FROM schedule")
     games = r.fetchall()
 
+    #get info on which bots to use
+    try:
+        r = cur.execute("SELECT * FROM bots")
+        bots = r.fetchall()
+    except:
+        print("missing granular bot info, please consider running the config script again!")
+        print("App will assume you want to run all bots")
+        bots = [["y", "y", "y", "y"]]
+
     #use login token, check for game, get community id, create post, then loop
     srv = LemmyHttp(server)
     srv.key = token
-    request = srv.get_community(None, communityName)
     global CID
-    CID = request.json().get("community_view")
-    CID = CID["community"].get("id")
-
+    CID = GetCommunityResponse(srv.get_community(name=communityName)).community_view.community.id
 
     #main loop
     while(True):
-        isGame()
+        # check for in Season for team:
+        seasonStart()
+        # bots(stats, standings, schedule, linescore)")
+        if(bots[0][3] == "y"):
+            isGame()
+
+
         today = time.strftime("%a")
-        if(str(today) == "Sun" and standings == False):
-            create_post_standings()
-            create_post_stats()
-            if(isMod == "y"):
+        #run scheduler weekly no matter what
+        if(str(today == "Sun" and scheduled == False)):
+            if(isMod == "y" and bots[0][2] == "y"):
                 scheduler()
+                scheduled = True
+        if(str(today) == "Sun" and standings == False and inSeason == True):
+            if(bots[0][1] == "y"):
+                create_post_standings()
+            if(bots[0][0] == "y"):
+                create_post_stats()
             standings = True
             stats = True
+        elif(str(today) == "Sun" and newSchedule == False):
             newSchedule = True
             # get new schedule weekly to catch playoffs
             cur.execute("DELETE FROM schedule")
@@ -288,4 +338,5 @@ def daemon():
             standings = False
             stats = False
             newSchedule = False
+            scheduled = False
         time.sleep(300)

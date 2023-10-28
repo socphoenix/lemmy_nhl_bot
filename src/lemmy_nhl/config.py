@@ -21,7 +21,7 @@ import time
 import os.path
 
 def config():
-    dbLocation = os.path.expanduser("~/.cache/lnhl.db")
+    dbLocation = os.path.expanduser("/opt/lnhl.db")
     print("Basic Setup, This will store your auth token in an unencrypted database. Username/password itself are not saved.")
     print("If database already exists all data will be overwritten!")
     server = input("server address (make sure to include the https://): ")
