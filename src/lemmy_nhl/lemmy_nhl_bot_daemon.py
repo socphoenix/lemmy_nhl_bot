@@ -72,7 +72,7 @@ def scheduler():
             if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
                 r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(games[x][0]) + "/linescore")
                 team = int(r.json().get("teams").get("home").get("team").get("id"))
-                if(team == teamID):
+                if(int(team) == int(teamID):
                     teamName = r.json().get("teams").get("away").get("team").get("name")
                 else:
                     teamName = r.json().get("teams").get("home").get("team").get("name")
