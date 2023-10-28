@@ -78,6 +78,7 @@ def scheduler():
                     teamName = r.json().get("teams").get("home").get("team").get("name")
                 timeStart = games[x][2]
                 timeStart = timeStart.split(":")
+                gate = games[x][1]
                 times = [int(timeStart[0]) - 4, int(timeStart[0]) - 5]
                 if(times[0] > 12):
                     times[0] = times[0] - 12
@@ -87,7 +88,7 @@ def scheduler():
                     pm = "p.m."
                 times[0] = str(times[0]) + ":" + str(timeStart[1])
                 times[1] = str(times[1]) + ":" + str(timeStart[1])
-                scheduleBody = scheduleBody + "| " + teamName + " | " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
+                scheduleBody = scheduleBody + "| " + teamName + " | " + gate + " " + times[0] + pm + " Est/" + times[1] + " Cst + | \n"
         date += datetime.timedelta(days=1)
         today = date.strftime("%Y, %m, %d").split(", ")
     try:
