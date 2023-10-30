@@ -304,7 +304,7 @@ def daemon():
 
         today = time.strftime("%a")
         #run scheduler weekly no matter what
-        if(str(today == "Sun" and scheduled == False)):
+        if(str(today) == "Sun" and scheduled == False):
             if(isMod == "y" and bots[0][2] == "y"):
                 scheduler()
                 scheduled = True
