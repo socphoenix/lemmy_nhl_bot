@@ -58,6 +58,7 @@ def seasonStart():
         inSeason = False
 
 #add side bar schedule task
+#done adding new api to scheduler!
 def scheduler():
     global games, srv, communityName
     teamName = ""
@@ -70,12 +71,12 @@ def scheduler():
             gameToday = games[x][1]
             gameToday = gameToday.split("-")
             if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
-                r = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(games[x][0]) + "/linescore")
-                team = int(r.json().get("teams").get("home").get("team").get("id"))
+                r = requests.get("https://api-web.nhle.com/v1/gamecenter/" + str(games[x][0]) + "/boxscore")
+                team = int(r.json().get("homeTeam").get("id"))
                 if(int(team) == int(teamID):
-                    teamName = r.json().get("teams").get("away").get("team").get("name")
+                    teamName = r.json().get("awayTeam").get("abbrev") + " " + r.json().get("awayTeam").get("name").get("default")
                 else:
-                    teamName = r.json().get("teams").get("home").get("team").get("name")
+                    teamName = r.json().get("homeTeam").get("abbrev") + " " + r.json().get("homeTeam").get("name").get("default")
                 timeStart = games[x][2]
                 timeStart = timeStart.split(":")
                 gate = games[x][1]
@@ -106,6 +107,7 @@ def scheduler():
         print("Failed to contact server, sidebar not updated")
 
 #is game
+#removed recap, functionality appears to have been removed from api.
 def isGame():
     global gameOver, games, gamePK, srv, postID
     today = time.strftime("%Y, %m, %d")
@@ -126,24 +128,6 @@ def isGame():
                 while(gameOver == False):
                     gameTime()
                 time.sleep(360)
-                r = srv.get_post(postID)
-                posted = False
-                while(posted == False):
-                    try:
-                        recap = requests.get("https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/content")
-                        recap = recap.json()
-                        body2 = r.json().get("post_view").get("post").get("body") + "\n\n "
-                        body2 = body2 + "# [recap]("
-                        body2 = body2 + str(recap.get("media").get("epg")[2].get("items")[0].get("playbacks")[3].get("url")) + ")"
-                        srv.edit_post(postID, body=body2)
-                        posted = True
-                    except:
-                        print("Failed to get recap, waiting 60 seconds.")
-                        time.sleep(60)
-                        recap_timeout = recap_timeout + 1
-                        if(recap_timeout > 4):
-                            print("Could not get recap ending attempts")
-                            posted = True
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
