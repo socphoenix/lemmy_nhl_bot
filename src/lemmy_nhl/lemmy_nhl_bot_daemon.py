@@ -131,21 +131,19 @@ def isGame():
                 srv.feature_post("Community", False, postID)
 
 #create post for linescore
+#done with new api up to here :)
 def create_post_linescore():
     global teamID, gamePK, isMod, srv, postID
     #get team Names/date/regular Season
-    game_today = "https://statsapi.web.nhl.com/api/v1/game/" + str(gamePK) + "/linescore"
-    game_today2 = "https://statsapi.web.nhl.com/api/v1/schedule?teamId="
-    game_today2 = game_today2 + str(teamID)
+    game_today = "https://api-web.nhle.com/v1/gamecenter/" + str(gamePK) + "/boxscore"
     r = requests.get(game_today)
-    t = requests.get(game_today2)
-    home_name = r.json().get("teams").get("home").get("team").get("name")
-    away_name = r.json().get("teams").get("away").get("team").get("name")
-    date = t.json().get("dates")[0].get("date")
-    gameType = t.json().get("dates")[0].get("games")[0].get("gameType")
-    if(gameType == "R"):
+    home_name = r.json().get("homeTeam").get("abbrev") + " " + r.json().get("homeTeam").get("name").get("default")
+    away_name = r.json().get("awayTeam").get("abbrev") + " " + r.json().get("awayTeam").get("name").get("default")
+    date = r.json().get("gameDate")
+    gameType = r.json().get("gameType")
+    if(str(gameType) == "2"):
         gameType = "Regular Season"
-    elif(gameType == "PR"):
+    elif(str(gameType) == "1"):
         gameType = "Pre-Season"
     else:
         gameType = "Playoffs"
