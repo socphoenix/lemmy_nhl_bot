@@ -36,6 +36,7 @@ srv = ""
 inSeason = False
 scheduled = False
 recap_timeout = 0
+gameYesterday = [0, 0, 0]
 # create time based services
 # check for game today:
 
@@ -118,6 +119,8 @@ def isGame():
         gameToday = gameToday.split("-")
         gamePK = games[x][0]
         if(today[0] == gameToday[0] and today[1] == gameToday[1] and today[2] == gameToday[2]):
+            if(gameYesterday[2] != gameToday[2] and gameOver == True):
+                gameOver = False
             timeStart = games[x][2]
             curTime = time.strftime("%H:%M", time.gmtime())
             timeStart = timeStart.split(":")
@@ -129,6 +132,7 @@ def isGame():
                     gameTime()
                 time.sleep(360)
                 srv.feature_post("Community", False, postID)
+                gameYesterday = today
 
 #create post for linescore
 #done with new api up to here :)
